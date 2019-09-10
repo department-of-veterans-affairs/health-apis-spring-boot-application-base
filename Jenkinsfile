@@ -38,9 +38,6 @@ pipeline {
     choice(name: 'VERSION', choices: ['8','12'], description: "Build the base image for this Java Version")
     }
   agent none
-  triggers {
-    upstream(upstreamProjects: 'department-of-veterans-affairs/health-apis-spring-boot-application-base/master', threshold: hudson.model.Result.SUCCESS)
-  }
 
   stages {
     /*
