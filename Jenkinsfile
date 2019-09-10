@@ -76,8 +76,18 @@ pipeline {
       }
     }
     stage('Build') {
+      when {
+        expression { return env.BUILD_MODE != 'ignore' }
+        expression { return env.BRANCH_NAME == 'master' }
+      }
+      agent {
+        dockerfile {
+          registryUrl 'https://index.docker.io/v1/'
+          registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
+          args DOCKER_ARGS
+        }
+      }
       steps {
-        echo "we definitly dont get here"
         saunter('./build.sh', env.VERSION)
       }
     }
