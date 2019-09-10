@@ -37,6 +37,7 @@ pipeline {
     booleanParam(name: 'DEBUG', defaultValue: false, description: "Enable debugging output")
     choice(name: 'VERSION', choices: ['8','12'], description: "Build the base image for this Java Version")
     }
+  agent none
   triggers {
     upstream(upstreamProjects: 'department-of-veterans-affairs/health-apis-spring-boot-application-base/master', threshold: hudson.model.Result.SUCCESS)
   }
@@ -45,6 +46,13 @@ pipeline {
     * Make sure we're getting into an infinite loop of build, commit, build because we committed.
     */
     stage('C-C-C-Combo Breaker!') {
+      agent {
+        dockerfile {
+           registryUrl 'https://index.docker.io/v1/'
+           registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
+           args DOCKER_ARGS
+        }
+      }
       steps {
         script {
           /*
