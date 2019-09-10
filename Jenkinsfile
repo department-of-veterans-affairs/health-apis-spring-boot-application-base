@@ -55,6 +55,7 @@ pipeline {
       }
       steps {
         script {
+          echo "do we even get here?"
           /*
            * If you need the explanation for this, check out the function. Hard enough to explain once.
            * tl;dr Github web hooks could cause go in an infinite loop.
@@ -76,7 +77,8 @@ pipeline {
     }
     stage('Build') {
       steps {
-          saunter('./build.sh', env.VERSION)
+        echo "we definitly dont get here"
+        saunter('./build.sh', env.VERSION)
       }
     }
     /*
