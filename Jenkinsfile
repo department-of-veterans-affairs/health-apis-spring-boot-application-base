@@ -83,11 +83,11 @@ pipeline {
            }
       }
       steps {
-          saunter('./build.sh')
+          saunter('./build.sh', var.VERSION)
       }
     }
     /*
-    I think there should be some kind of notification here.  Ask about Slack Notification fucntion above ^^^
+    I think there should be some kind of notification here.  Ask about Slack Notification function above ^^^
     */
   }
 }
