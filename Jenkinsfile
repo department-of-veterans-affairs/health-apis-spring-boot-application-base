@@ -76,7 +76,7 @@ pipeline {
     }
     stage('Build') {
       steps {
-          saunter('./build.sh', var.VERSION)
+          saunter('./build.sh', env.VERSION)
       }
     }
     /*
