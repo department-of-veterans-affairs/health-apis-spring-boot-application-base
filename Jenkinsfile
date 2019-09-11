@@ -11,6 +11,7 @@ def saunter(scriptName) {
       credentialsId: 'DOCKER_SOURCE_REGISTRY',
       variable: 'DOCKER_SOURCE_REGISTRY'),
   ]) {
+    echo "APPLICATION_BASE_VERSION = ${env.APPLICATION_BASE_VERSION}"
     sh script: scriptName ${env.APPLICATION_BASE_VERSION}
   }
 }
