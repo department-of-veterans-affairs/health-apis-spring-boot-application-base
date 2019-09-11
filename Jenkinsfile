@@ -1,4 +1,4 @@
-def saunter(scriptName, version) {
+def saunter(scriptName) {
   withCredentials([
     usernameColonPassword(
       credentialsId: 'GITHUB_USERNAME_PASSWORD',
@@ -11,15 +11,15 @@ def saunter(scriptName, version) {
       credentialsId: 'DOCKER_SOURCE_REGISTRY',
       variable: 'DOCKER_SOURCE_REGISTRY'),
   ]) {
-    sh script: scriptName
+    sh script: scriptName ${env.APPLICATION_BASE_VERSION}
   }
 }
 
-def sendDeployMessage(channelName, version) {
+def sendDeployMessage(channelName) {
   slackSend(
     channel: channelName,
     color: '#4682B4',
-    message: "Building spring-boot-application-base ${version} - ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+    message: "Building spring-boot-application-base ${env.APPLICATION_BASE_VERSION} - ${env.JOB_NAME} ${env.BUILD_NUMBER}"
   )
 }
 
@@ -35,7 +35,7 @@ pipeline {
   }
   parameters {
     booleanParam(name: 'DEBUG', defaultValue: false, description: "Enable debugging output")
-    choice(name: 'VERSION', choices: ['8','12'], description: "Build the base image for this Java Version")
+    choice(name: 'APPLICATION_BASE_VERSION', choices: ['8','12'], description: "Build the base image for this Java Version")
     }
   agent {
     docker {
@@ -83,7 +83,7 @@ pipeline {
         */
       }
       steps {
-        saunter('./build.sh', env.VERSION)
+        saunter('./build.sh')
       }
     }
     /*
