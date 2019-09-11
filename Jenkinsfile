@@ -56,7 +56,6 @@ pipeline {
     stage('C-C-C-Combo Breaker!') {
       steps {
         script {
-          echo "do we even get here?"
           /*
            * If you need the explanation for this, check out the function. Hard enough to explain once.
            * tl;dr Github web hooks could cause go in an infinite loop.
@@ -79,7 +78,9 @@ pipeline {
     stage('Build') {
       when {
         expression { return env.BUILD_MODE != 'ignore' }
+        /*
         expression { return env.BRANCH_NAME == 'master' }
+        */
       }
       steps {
         saunter('./build.sh', env.VERSION)
