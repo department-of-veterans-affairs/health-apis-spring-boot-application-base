@@ -12,7 +12,7 @@ def saunter(scriptName) {
       variable: 'DOCKER_SOURCE_REGISTRY'),
   ]) {
     echo "APPLICATION_BASE_VERSION = ${env.APPLICATION_BASE_VERSION}"
-    sh script: scriptName ${env.APPLICATION_BASE_VERSION}
+    sh script: scriptName
   }
 }
 
@@ -36,7 +36,7 @@ pipeline {
   }
   parameters {
     booleanParam(name: 'DEBUG', defaultValue: false, description: "Enable debugging output")
-    choice(name: 'APPLICATION_BASE_VERSION', choices: ['8','12'], description: "Build the base image for this Java Version")
+    choice(name: 'APPLICATION_BASE_VERSION', choices: ['none','8','12'], description: "Build the base image for this Java Version")
     }
   agent {
     docker {

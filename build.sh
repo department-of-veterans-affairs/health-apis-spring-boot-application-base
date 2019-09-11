@@ -78,12 +78,19 @@ retagDockerImage(){
   docker tag $dockerRepo:$sectag $dockerRepo:$tag
 }
 
+if [ "$APPLICATION_BASE_VERSION" == "none" ]
+then
+  echo "Spring Boot Appication Base Upgrade"
+  echo "Nothing Built"
+  echo "Nothing Pushed"
+  echo "This job really just did nothing"
+  echo "\" I'm just trying to do as little as possible \" - My Hero"
+  exit 0
+fi 
 
+VERSION = $APPLICATION_BASE_VERSION
 
-[ $# == 0 ] && echo "No jdk version specified. Supported versions are 8 and 12." && exit 1
-VERSION=$1
-
-case "$VERSION" in
+case VERSION in
   8) doUpgrade jdk-8 ;;
   12) doUpgrade jdk-12 ;;
   *) echo "Unknown version: $VERSION. Supported versions are 8 and 12." && exit 1 ;;
