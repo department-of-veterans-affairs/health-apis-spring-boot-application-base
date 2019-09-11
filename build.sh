@@ -90,9 +90,13 @@ else
   VERSION=$APPLICATION_BASE_VERSION
 fi 
 
+echo $VERSION
 
-case VERSION in
-  "8") doUpgrade jdk-8 ;;
-  "12") doUpgrade jdk-12 ;;
+
+
+
+case "$VERSION" in
+  8) doUpgrade jdk-8 ;;
+  12) doUpgrade jdk-12 ;;
   *) echo "Unknown version: $VERSION. Supported versions are 8 and 12." && exit 1 ;;
 esac
