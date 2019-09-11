@@ -86,9 +86,10 @@ then
   echo "This job really just did nothing"
   echo "\" I'm just trying to do as little as possible \" - My Hero"
   exit 0
+else
+  VERSION=$APPLICATION_BASE_VERSION
 fi 
 
-VERSION = $APPLICATION_BASE_VERSION
 
 case VERSION in
   8) doUpgrade jdk-8 ;;

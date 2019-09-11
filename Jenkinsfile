@@ -36,7 +36,7 @@ pipeline {
   }
   parameters {
     booleanParam(name: 'DEBUG', defaultValue: false, description: "Enable debugging output")
-    choice(name: 'APPLICATION_BASE_VERSION', choices: ['none','8','12'], description: "Build the base image for this Java Version")
+    choice(name: 'APPLICATION_BASE_VERSION', defaultValue: 'none', choices: ['none','8','12'], description: "Build the base image for this Java Version")
     }
   agent {
     docker {
