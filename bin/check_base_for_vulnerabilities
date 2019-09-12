@@ -17,12 +17,14 @@ TAG=$2
 
 test -n $TAG
 test -n $DOCKER_REPO
+test -n $QUALYS_USERNAME
+test -n $QUALYS_PASSWORD
 
 echo "Pulling down $DOCKER_REPO:$TAG to get SHA to check Qualys"
 docker pull $DOCKER_REPO:$TAG
 
 
-# Get the SHA of the current base image
+# Get the SHA of the current base image and remove leading and trailing "
 FULL_DOCKER_SHA=$(docker inspect $DOCKER_REPO:$TAG | jq .[0].Id | tr -d '"')
 echo "FULL SHA $FULL_DOCKER_SHA"
 
@@ -50,17 +52,25 @@ fi
 echo $(echo $QUALYS_SCAN_RESULT | jq)
 
 # This will check to see if there are any confirmed vulnerabilities
-echo $(echo $QUALYS_SCAN_RESULT | jq '.vulnSummary.confirmed | \(.sev5Count) \(.sev4Count) \(.sev3Count) \(.sev2Count) \(.sev1Count)')
+echo $(echo $QUALYS_SCAN_RESULT | jq -r \
+	'[.vulnSummary.confirmed.sev1Count,.vulnSummary.confirmed.sev2Count,.vulnSummary.confirmed.sev3Count, \
+	.vulnSummary.confirmed.sev4Count, .vulnSummary.confirmed.sev5Count] | @tsv')
 
 # This does something very similar in that it checks to see if there are any patches.
-echo $(echo $QUALYS_SCAN_RESULT | jq '.vulnSummary.patchAvailability.confirmed | \(.sev5Count) \(.sev4Count) \(.sev3Count) \(.sev2Count) \(.sev1Count)')
+echo $(echo $QUALYS_SCAN_RESULT | jq -r \
+	'[.patchAvailability.confirmed.sev1Count,.patchAvailability.confirmed.sev2Count,.patchAvailability.confirmed.sev3Count, \
+	.patchAvailability.confirmed.sev4Count, .patchAvailability.confirmed.sev5Count] | @tsv')
+
 
 # This will check POTENTIAL vulnerabilities
-echo $(echo $QUALYS_SCAN_RESULT | jq '.vulnSummary.potential | \(.sev5Count) \(.sev4Count) \(.sev3Count) \(.sev2Count) \(.sev1Count)')
+echo $(echo $QUALYS_SCAN_RESULT | jq -r \
+	'[.vulnSummary.potential.sev1Count,.vulnSummary.potential.sev2Count,.vulnSummary.potential.sev3Count, \
+	.vulnSummary.potential.sev4Count, .vulnSummary.potential.sev5Count] | @tsv')
 
 # This will check patches of POTENTIAL vulnerabilities
-echo $(echo $QUALYS_SCAN_RESULT | jq '.vulnSummary.patchAvailability.potential | \(.sev5Count) \(.sev4Count) \(.sev3Count) \(.sev2Count) \(.sev1Count)')
-
+echo $(echo $QUALYS_SCAN_RESULT | jq -r \
+	'[.patchAvailability.potential.sev1Count,.patchAvailability.potential.sev2Count,.patchAvailability.potential.sev3Count, \
+	.patchAvailability.potential.sev4Count, .patchAvailability.potential.sev5Count] | @tsv')
 
 # I feel like I could get away with just checking to see if there any patches.  
 # Which would mean we had a vulnerability that could actually be fixed by this rebuild.
