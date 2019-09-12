@@ -40,7 +40,7 @@ QUALYS_SCAN_RESULT=$(curl -u $QUALYS_USERNAME:$QUALYS_PASSWORD $QUALYS_ENDPOINT)
 
 QUALYS_VULN_SUMMARY=$(echo $QUALYS_SCAN_RESULT | jq '.vulnSummary')
 
-if [ $QUALUS_VULN_SUMMARY == "null" ]
+if [ $QUALYS_VULN_SUMMARY == "null" ]
 then
 	echo "Cannot get vulnerability information"
 	echo "Error Message: $(cat $WORK/app-base-$TAG-docker.json | jq '.message')"
