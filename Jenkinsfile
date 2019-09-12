@@ -11,7 +11,7 @@ def saunter(scriptName) {
       credentialsId: 'DOCKER_SOURCE_REGISTRY',
       variable: 'DOCKER_SOURCE_REGISTRY'),
     usernamePassword(
-      credentialsID: 'QUALYS_USERNAME_PASSWORD',
+      credentialsId: 'QUALYS_USERNAME_PASSWORD',
       usernameVariable: 'QUALYS_USERNAME',
       passwordVariable: 'QUALYS_PASSWORD')
   ]) {
