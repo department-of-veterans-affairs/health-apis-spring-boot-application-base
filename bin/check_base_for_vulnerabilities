@@ -38,16 +38,14 @@ echo "Qualys Password $QUALYS_PASSWORD"
 QUALYS_ENDPOINT=https://qualysapi.qg3.apps.qualys.com/csapi/v1.1/images/$DOCKER_SHA/vuln
 QUALYS_SCAN_RESULT=$(curl -u $QUALYS_USERNAME:$QUALYS_PASSWORD $QUALYS_ENDPOINT)
 
-if [ $(echo $QUALYS_SCAN_RESULT | jq ".errorCode") != "null" ]
+if [ $(echo $QUALYS_SCAN_RESULT | jq ".errorCode") == "null" ]
 then
+	echo "Found Image in Qualys Scans"
+else
 	echo "Cannot get vulnerability information"
 	echo "Error Message: $(cat $WORK/app-base-$TAG-docker.json | jq '.message')"
 	exit 1
-else
-	echo "Found Image in Qualys Scans"
 fi
-
-
 
 echo $(cat $WORK/app-base-$TAG-docker.json) | jq
 
