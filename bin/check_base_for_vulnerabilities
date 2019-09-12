@@ -8,16 +8,6 @@ set -euo pipefail
 
 
 #
-# Create a temporary workspace
-#
-WORK=$(mktemp -p . -d scan_info.XXXX )
-trap onExit EXIT
-onExit() {
-  [ -d $WORK ] && rm -rf $WORK
-}
-
-
-#
 # Pull the latest tag of the Docker Base and check to see how many vulnerabilities it has
 # The Qualy's scans of the parent repos occur nightly at midnight so they should ne up to date.
 #
@@ -46,17 +36,17 @@ echo "Qualys Password $QUALYS_PASSWORD"
 
 # Make Request to our Qualys Container scans to get a list of vulnerabilities back
 QUALYS_ENDPOINT=https://qualysapi.qg3.apps.qualys.com/csapi/v1.1/images/$DOCKER_SHA/vuln
-curl -u $QUALYS_USERNAME:$QUALYS_PASSWORD $QUALYS_ENDPOINT > $WORK/app-base-$TAG-docker.json
+QUALYS_SCAN_RESULT=$(curl -u $QUALYS_USERNAME:$QUALYS_PASSWORD $QUALYS_ENDPOINT)
 
-echo $(cat $WORK/app-base-$TAG-docker.json)
+QUALYS_VULN_SUMMARY=$(echo $QUALYS_SCAN_RESULT | jq '.vulnSummary')
 
-if [ $(cat $WORK/app-base-$TAG-docker.json | jq '.vulnSummary') != "null" ]
+if [ $QUALUS_VULN_SUMMARY == "null" ]
 then
-	echo "it IS null"
-else
 	echo "Cannot get vulnerability information"
 	echo "Error Message: $(cat $WORK/app-base-$TAG-docker.json | jq '.message')"
 	exit 1
+else
+	echo "Found Image in Qualys Scans"
 fi
 
 echo $(cat $WORK/app-base-$TAG-docker.json) | jq
