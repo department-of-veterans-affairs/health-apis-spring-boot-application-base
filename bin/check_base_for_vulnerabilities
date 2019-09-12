@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+
+
+#
+# Ensure that we fail fast on any issues.
+#
+set -euo pipefail
+
+
+#
+# Create a temporary workspace
+#
+WORK=$(mktemp -p . -d scan_info.XXXX )
+trap onExit EXIT
+onExit() {
+  [ -d $WORK ] && rm -rf $WORK
+}
+
+
+#
+# Pull the latest tag of the Docker Base and check to see how many vulnerabilities it has
+# The Qualy's scans of the parent repos occur nightly at midnight so they should ne up to date.
+#
+
+DOCKER_REPO=$1
+TAG=$2
+
+test -n $TAG
+test -n $DOCKER_REPO
+
+echo "Pulling down $DOCKER_REPO:$TAG to get SHA to check Qualys"
+docker pull $DOCKER_REPO:$TAG
+
+
+# Get the SHA of the current base image
+FULL_DOCKER_SHA=$(docker inspect $DOCKER_REPO:$TAG | jq .[0].Id | tr -d '"')
+echo "FULL SHA $FULL_DOCKER_SHA"
+
+# Strip off 'sha:' from the response from docker insepct
+DOCKER_SHA="${FULL_DOCKER_SHA#*:}"
+echo "Important SHA: $DOCKER_SHA"
+
+
+# Make Request to our Qualys Container scans to get a list of vulnerabilities back
+QUALYS_URL=https://qualysapi.qg3.apps.qualys.com/csapi/v1.1/images/$DOCKER_SHA/vuln
+curl -u $QUALYS_USER:$QUALYS_PASS $QUALYS_URL > $WORK/app-base-$TAG-docker.json
+
+if [ $(cat $WORK/app-base-$TAG-docker.json | jq '.vulnSummary') != "null" ]
+then
+	echo "it IS null"
+else
+	echo "Cannot get vulnerability information"
+	echo "Error Message: $(cat $WORK/app-base-$TAG-docker.json | jq '.message')"
+	exit 1
+fi
+
+echo $(cat $WORK/app-base-$TAG-docker.json) | jq
+
+# This will check to see if there are any confirmed vulnerabilities
+echo $(cat $WORK/app-base-$TAG-docker.json | jq '.vulnSummary.confirmed | \(.sev5Count) \(.sev4Count) \(.sev3Count) \(.sev2Count) \(.sev1Count)')
+
+# This does something very similar in that it checks to see if there are any patches.
+echo $(cat $WORK/app-base-$TAG-docker.json | jq '.vulnSummary.patchAvailability.confirmed | \(.sev5Count) \(.sev4Count) \(.sev3Count) \(.sev2Count) \(.sev1Count)')
+
+# This will check POTENTIAL vulnerabilities
+echo $(cat $WORK/app-base-$TAG-docker.json | jq '.vulnSummary.potential | \(.sev5Count) \(.sev4Count) \(.sev3Count) \(.sev2Count) \(.sev1Count)')
+
+# This will check patches of POTENTIAL vulnerabilities
+echo $(cat $WORK/app-base-$TAG-docker.json | jq '.vulnSummary.patchAvailability.potential | \(.sev5Count) \(.sev4Count) \(.sev3Count) \(.sev2Count) \(.sev1Count)')
+
+
+# I feel like I could get away with just checking to see if there any patches.  
+# Which would mean we had a vulnerability that could actually be fixed by this rebuild.
+# Other Vulnerabilities would have to be handled outside of this auto update of Docker Parent.

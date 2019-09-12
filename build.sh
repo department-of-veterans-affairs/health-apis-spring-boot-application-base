@@ -20,33 +20,41 @@ set -euo pipefail
 #
 # Make our utilities available on the path
 #
-#export PATH=$WORKSPACE/bin:$PATH
+export PATH=$WORKSPACE/bin:$PATH
 
 doUpgrade() {
   dockerRepo=vasdvp/health-apis-spring-boot-application-base
   tag=$1
   sectag=$1-sec-scan
+
+  #Check to see if there are vulnerabilities in the image.
+  checkForVulnerabilities
   
   #Build the new spring-boot-application-base
-  doDockerBuild
+  #doDockerBuild
   
   #Push the sectag to DockerHub
-  doDockerPush $sectag
+  #doDockerPush $sectag
   
   #give the image 30 sec before we pull it down to use it.
-  sleep 30
+  #sleep 30
   
   #Build the Test Application for the specific version
-  buildTestApplication
+  #buildTestApplication
 
   #Test the application that was just launched.  For a specific version
-  testApplication
+  #testApplication
 
   #Tag the sectag as the regular tag
-  retagDockerImage
+  #retagDockerImage
 
   #Push to repo with real tag
   #doDockerPush $tag
+}
+
+checkForVulnerabilities(){
+  echo "check base for vulnerabilities"
+  check_base_for_vulnerabilities $dockerRepo $tag 
 }
 
 doDockerBuild(){
@@ -90,10 +98,7 @@ else
   VERSION=$APPLICATION_BASE_VERSION
 fi 
 
-echo $VERSION
-
-
-
+echo "version: $VERSION"
 
 case "$VERSION" in
   8) doUpgrade jdk-8 ;;
