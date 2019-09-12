@@ -47,19 +47,19 @@ else
 	exit 1
 fi
 
-echo $(cat $WORK/app-base-$TAG-docker.json) | jq
+echo $($QUALYS_SCAN_RESULT) | jq
 
 # This will check to see if there are any confirmed vulnerabilities
-echo $(cat $WORK/app-base-$TAG-docker.json | jq '.vulnSummary.confirmed | \(.sev5Count) \(.sev4Count) \(.sev3Count) \(.sev2Count) \(.sev1Count)')
+echo $($QUALYS_SCAN_RESULT | jq '.vulnSummary.confirmed | \(.sev5Count) \(.sev4Count) \(.sev3Count) \(.sev2Count) \(.sev1Count)')
 
 # This does something very similar in that it checks to see if there are any patches.
-echo $(cat $WORK/app-base-$TAG-docker.json | jq '.vulnSummary.patchAvailability.confirmed | \(.sev5Count) \(.sev4Count) \(.sev3Count) \(.sev2Count) \(.sev1Count)')
+echo $($QUALYS_SCAN_RESULT | jq '.vulnSummary.patchAvailability.confirmed | \(.sev5Count) \(.sev4Count) \(.sev3Count) \(.sev2Count) \(.sev1Count)')
 
 # This will check POTENTIAL vulnerabilities
-echo $(cat $WORK/app-base-$TAG-docker.json | jq '.vulnSummary.potential | \(.sev5Count) \(.sev4Count) \(.sev3Count) \(.sev2Count) \(.sev1Count)')
+echo $($QUALYS_SCAN_RESULT | jq '.vulnSummary.potential | \(.sev5Count) \(.sev4Count) \(.sev3Count) \(.sev2Count) \(.sev1Count)')
 
 # This will check patches of POTENTIAL vulnerabilities
-echo $(cat $WORK/app-base-$TAG-docker.json | jq '.vulnSummary.patchAvailability.potential | \(.sev5Count) \(.sev4Count) \(.sev3Count) \(.sev2Count) \(.sev1Count)')
+echo $($QUALYS_SCAN_RESULT | jq '.vulnSummary.patchAvailability.potential | \(.sev5Count) \(.sev4Count) \(.sev3Count) \(.sev2Count) \(.sev1Count)')
 
 
 # I feel like I could get away with just checking to see if there any patches.  
