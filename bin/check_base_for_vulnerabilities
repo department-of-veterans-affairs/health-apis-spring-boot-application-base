@@ -48,6 +48,8 @@ echo "Qualys Password $QUALYS_PASSWORD"
 QUALYS_ENDPOINT=https://qualysapi.qg3.apps.qualys.com/csapi/v1.1/images/$DOCKER_SHA/vuln
 curl -u $QUALYS_USERNAME:$QUALYS_PASSWORD $QUALYS_ENDPOINT > $WORK/app-base-$TAG-docker.json
 
+echo $(cat $WORK/app-base-$TAG-docker.json)
+
 if [ $(cat $WORK/app-base-$TAG-docker.json | jq '.vulnSummary') != "null" ]
 then
 	echo "it IS null"
