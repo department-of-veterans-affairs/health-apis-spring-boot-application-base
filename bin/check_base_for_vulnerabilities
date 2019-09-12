@@ -41,9 +41,12 @@ DOCKER_SHA="${FULL_DOCKER_SHA#*:}"
 echo "Important SHA: $DOCKER_SHA"
 
 
+echo $QUALYS_USERNAME
+echo $QUALYS_PASSWORD
+
 # Make Request to our Qualys Container scans to get a list of vulnerabilities back
-QUALYS_URL=https://qualysapi.qg3.apps.qualys.com/csapi/v1.1/images/$DOCKER_SHA/vuln
-curl -u $QUALYS_USER:$QUALYS_PASS $QUALYS_URL > $WORK/app-base-$TAG-docker.json
+QUALYS_ENDPOINT=https://qualysapi.qg3.apps.qualys.com/csapi/v1.1/images/$DOCKER_SHA/vuln
+curl -u $QUALYS_USERNAME:$QUALYS_PASSWORD $QUALYS_ENDPOINT > $WORK/app-base-$TAG-docker.json
 
 if [ $(cat $WORK/app-base-$TAG-docker.json | jq '.vulnSummary') != "null" ]
 then

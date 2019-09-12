@@ -10,6 +10,10 @@ def saunter(scriptName) {
     string(
       credentialsId: 'DOCKER_SOURCE_REGISTRY',
       variable: 'DOCKER_SOURCE_REGISTRY'),
+    usernamePassword(
+      credentialsID: 'QUALYS_USERNAME_PASSWORD',
+      usernameVariable: 'QUALYS_USERNAME',
+      passwordVariable: 'QUALYS_PASSWORD')
   ]) {
     echo "APPLICATION_BASE_VERSION = ${env.APPLICATION_BASE_VERSION}"
     sh script: scriptName
