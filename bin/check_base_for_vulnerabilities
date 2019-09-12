@@ -52,17 +52,17 @@ fi
 echo $(echo $QUALYS_SCAN_RESULT | jq)
 
 # This will check to see if there are any confirmed vulnerabilities
-echo $QUALYS_SCAN_RESULT | jq -r '[.vulnSummary.confirmed.sev1Count,.vulnSummary.confirmed.sev2Count,.vulnSummary.confirmed.sev3Count,.vulnSummary.confirmed.sev4Count, .vulnSummary.confirmed.sev5Count] | @tsv'
+echo $QUALYS_SCAN_RESULT | jq -r '[.vulnSummary.confirmed.sev1Count,.vulnSummary.confirmed.sev2Count,.vulnSummary.confirmed.sev3Count,.vulnSummary.confirmed.sev4Count,.vulnSummary.confirmed.sev5Count] | @tsv'
 
 # This does something very similar in that it checks to see if there are any patches.
-echo $QUALYS_SCAN_RESULT | jq -r '[.patchAvailability.confirmed.sev1Count,.patchAvailability.confirmed.sev2Count,.patchAvailability.confirmed.sev3Count,.patchAvailability.confirmed.sev4Count, .patchAvailability.confirmed.sev5Count] | @tsv'
+echo $QUALYS_SCAN_RESULT | jq -r '[.vulnSummary.patchAvailability.confirmed.sev1Count,.vulnSummary.patchAvailability.confirmed.sev2Count,.vulnSummary.patchAvailability.confirmed.sev3Count,.vulnSummary.patchAvailability.confirmed.sev4Count,.vulnSummary.patchAvailability.confirmed.sev5Count] | @tsv'
 
 
 # This will check POTENTIAL vulnerabilities
-echo $QUALYS_SCAN_RESULT | jq -r '[.vulnSummary.potential.sev1Count,.vulnSummary.potential.sev2Count,.vulnSummary.potential.sev3Count,.vulnSummary.potential.sev4Count, .vulnSummary.potential.sev5Count] | @tsv'
+echo $QUALYS_SCAN_RESULT | jq -r '[.vulnSummary.potential.sev1Count,.vulnSummary.potential.sev2Count,.vulnSummary.potential.sev3Count,.vulnSummary.potential.sev4Count,.vulnSummary.potential.sev5Count] | @tsv'
 
 # This will check patches of POTENTIAL vulnerabilities
-echo $QUALYS_SCAN_RESULT | jq -r '[.patchAvailability.potential.sev1Count,.patchAvailability.potential.sev2Count,.patchAvailability.potential.sev3Count,.patchAvailability.potential.sev4Count, .patchAvailability.potential.sev5Count] | @tsv'
+echo $QUALYS_SCAN_RESULT | jq -r '[.vulnSummary.patchAvailability.potential.sev1Count,.vulnSummary.patchAvailability.potential.sev2Count,.vulnSummary.patchAvailability.potential.sev3Count,.vulnSummary.patchAvailability.potential.sev4Count,.vulnSummary.patchAvailability.potential.sev5Count] | @tsv'
 
 # I feel like I could get away with just checking to see if there any patches.  
 # Which would mean we had a vulnerability that could actually be fixed by this rebuild.
