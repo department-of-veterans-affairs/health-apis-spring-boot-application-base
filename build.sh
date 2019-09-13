@@ -11,6 +11,7 @@ if [ "${DEBUG}" == true ]; then
   env | sort
 fi
 
+WORKSPACE='/Users/tournour/api-gateway/health-apis-spring-boot-application-base'
 
 #
 # Ensure that we fail fast on any issues.
@@ -31,10 +32,10 @@ doUpgrade() {
   checkForVulnerabilities
   
   #Build the new spring-boot-application-base
-  #doDockerBuild
+  #doDockerBuild $dockerRepo $sectag
   
   #Push the sectag to DockerHub
-  #doDockerPush $sectag
+  #doDockerPush $dockerRepo $sectag
   
   #give the image 30 sec before we pull it down to use it.
   #sleep 30
@@ -46,25 +47,35 @@ doUpgrade() {
   #testApplication
 
   #Tag the sectag as the regular tag
-  #retagDockerImage
+  #retagDockerImage $dockerRepo $sectag $tag
 
   #Push to repo with real tag
-  #doDockerPush $tag
+  #doDockerPush $dockerRepo $tag
 }
 
 checkForVulnerabilities(){
   echo "check base for vulnerabilities"
-  check_base_for_vulnerabilities $dockerRepo $tag 
+  source check_base_for_vulnerabilities $dockerRepo $tag
+  
+  echo $?
+  echo $REBUILD_STATUS
+  if [ $REBUILD_STATUS == true ]
+  then 
+    echo "There ARE vulnerabilities to patch"
+  else
+    echo "There ARE NO vulnerabilities to patch"
+    exit 0
+  fi
 }
 
 doDockerBuild(){
   #Build local docker image with the custom tag
-  docker build -f Dockerfile$VERSION -t $dockerRepo:$sectag .
+  docker build -f Dockerfile$VERSION -t $1:$2 .
 }
 
 doDockerPush(){
   #Push docker image
-  docker push vasdvp/health-apis-spring-boot-application-base:$1
+  docker push $1:$2
 }
 
 buildTestApplication(){
@@ -83,7 +94,7 @@ testApplication(){
 }
 
 retagDockerImage(){
-  docker tag $dockerRepo:$sectag $dockerRepo:$tag
+  docker tag $1:$2 $1:$3
 }
 
 if [ "$APPLICATION_BASE_VERSION" == "none" ]

@@ -1,19 +1,62 @@
 #!/usr/bin/env bash
 
-
 #
 # Ensure that we fail fast on any issues.
 #
 set -euo pipefail
-
 
 #
 # Pull the latest tag of the Docker Base and check to see how many vulnerabilities it has
 # The Qualy's scans of the parent repos occur nightly at midnight so they should ne up to date.
 #
 
+
+#
+# Please look at format of QUALYS_SCAN_RESULT.  This will go through and prase all sev*Count for confrimed, potential,
+# patchAvailability.confirmed, and patchAvailability.potential)
+#
+
+sumOfScans(){
+    base=$1
+    echo "0"
+    #echo $(tr '\t' '+' <<< $(echo $QUALYS_SCAN_RESULT | jq -r "[.$base.sev1Count,.$base.sev2Count,.$base.sev3Count,.$base.sev4Count,.$base.sev5Count] | @tsv") | bc)
+}
+
+#THIS ISNT DONE
+checkConfirmedVulnerabilities(){
+    if [ $(sumOfScans "vulnSummary.confirmed") != 0 ]
+    then
+        if [ $(sumOfScans "vulnSummary.patchAvailability.confirmed") != 0 ]
+            then 
+                echo "We should rebuild"
+                REBUILD=true
+            else
+                echo "We should NOT rebuild"
+        fi
+    else
+        echo "We should NOT rebuild"
+    fi
+}
+
+#THIS ISNT DONE
+checkPotentialVulnerabilities(){
+    if [ $(sumOfScans "vulnSummary.potential") != "0" ]
+    then
+        if [ $(sumOfScans "vulnSummary.patchAvailability.potential") != 0 ]
+            then 
+                echo "We should rebuild"
+                REBUILD=true
+            else 
+                echo "We should NOT rebuild"
+        fi
+    else
+        echo "We should NOT rebuild"
+    fi
+}
+
 DOCKER_REPO=$1
 TAG=$2
+REBUILD=false
 
 test -n $TAG
 test -n $DOCKER_REPO
@@ -23,7 +66,6 @@ test -n $QUALYS_PASSWORD
 echo "Pulling down $DOCKER_REPO:$TAG to get SHA to check Qualys"
 docker pull $DOCKER_REPO:$TAG
 
-
 # Get the SHA of the current base image and remove leading and trailing "
 FULL_DOCKER_SHA=$(docker inspect $DOCKER_REPO:$TAG | jq .[0].Id | tr -d '"')
 echo "FULL SHA $FULL_DOCKER_SHA"
@@ -31,7 +73,6 @@ echo "FULL SHA $FULL_DOCKER_SHA"
 # Strip off 'sha:' from the response from docker insepct
 DOCKER_SHA="${FULL_DOCKER_SHA#*:}"
 echo "Important SHA: $DOCKER_SHA"
-
 
 echo "Qualys Username $QUALYS_USERNAME"
 echo "Qualys Password $QUALYS_PASSWORD"
@@ -42,28 +83,16 @@ QUALYS_SCAN_RESULT=$(curl -u $QUALYS_USERNAME:$QUALYS_PASSWORD $QUALYS_ENDPOINT)
 
 if [ $(echo $QUALYS_SCAN_RESULT | jq ".errorCode") == "null" ]
 then
-	echo "Found Image in Qualys Scans"
+    echo "Found Image in Qualys Scans"
 else
-	echo "Cannot get vulnerability information"
-	echo "Error Message: $(cat $WORK/app-base-$TAG-docker.json | jq '.message')"
-	exit 1
+    echo "Cannot get vulnerability information"
+    echo "Error Message: $(cat $WORK/app-base-$TAG-docker.json | jq '.message')"
+    exit 1
 fi
 
-echo $(echo $QUALYS_SCAN_RESULT | jq)
+echo $QUALYS_SCAN_RESULT | jq
 
-# This will check to see if there are any confirmed vulnerabilities
-echo $QUALYS_SCAN_RESULT | jq -r '[.vulnSummary.confirmed.sev1Count,.vulnSummary.confirmed.sev2Count,.vulnSummary.confirmed.sev3Count,.vulnSummary.confirmed.sev4Count,.vulnSummary.confirmed.sev5Count] | @tsv'
+checkConfirmedVulnerabilities
+checkPotentialVulnerabilities
 
-# This does something very similar in that it checks to see if there are any patches.
-echo $QUALYS_SCAN_RESULT | jq -r '[.vulnSummary.patchAvailability.confirmed.sev1Count,.vulnSummary.patchAvailability.confirmed.sev2Count,.vulnSummary.patchAvailability.confirmed.sev3Count,.vulnSummary.patchAvailability.confirmed.sev4Count,.vulnSummary.patchAvailability.confirmed.sev5Count] | @tsv'
-
-
-# This will check POTENTIAL vulnerabilities
-echo $QUALYS_SCAN_RESULT | jq -r '[.vulnSummary.potential.sev1Count,.vulnSummary.potential.sev2Count,.vulnSummary.potential.sev3Count,.vulnSummary.potential.sev4Count,.vulnSummary.potential.sev5Count] | @tsv'
-
-# This will check patches of POTENTIAL vulnerabilities
-echo $QUALYS_SCAN_RESULT | jq -r '[.vulnSummary.patchAvailability.potential.sev1Count,.vulnSummary.patchAvailability.potential.sev2Count,.vulnSummary.patchAvailability.potential.sev3Count,.vulnSummary.patchAvailability.potential.sev4Count,.vulnSummary.patchAvailability.potential.sev5Count] | @tsv'
-
-# I feel like I could get away with just checking to see if there any patches.  
-# Which would mean we had a vulnerability that could actually be fixed by this rebuild.
-# Other Vulnerabilities would have to be handled outside of this auto update of Docker Parent.
+export REBUILD_STATUS=$REBUILD
