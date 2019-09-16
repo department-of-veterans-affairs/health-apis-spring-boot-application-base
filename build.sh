@@ -80,7 +80,7 @@ buildTestApplication(){
   echo "Building local docker image to test"
   #going to need to figure out how to do this.  Probably want to pull down an easy repo (IDS for jdk-12?).
   cd $WORKSPACE
-  git clone git@github.com:department-of-veterans-affairs/health-apis-ids.git
+  git clone https://github.com/department-of-veterans-affairs/health-apis-ids.git
   cd $WORKSPACE/health-apis-ids
   mvn clean install io.fabric8:docker-maven-plugin:build -Ddocker.baseImage=$dockerRepo -Ddocker.baseVersion=$sectag -Prelease
 
