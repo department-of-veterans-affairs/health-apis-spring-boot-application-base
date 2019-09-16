@@ -11,8 +11,6 @@ if [ "${DEBUG}" == true ]; then
   env | sort
 fi
 
-WORKSPACE='/Users/tournour/api-gateway/health-apis-spring-boot-application-base'
-
 #
 # Ensure that we fail fast on any issues.
 #
@@ -32,16 +30,16 @@ doUpgrade() {
   checkForVulnerabilities
   
   #Build the new spring-boot-application-base
-  #doDockerBuild $dockerRepo $sectag
+  doDockerBuild $dockerRepo $sectag
   
   #Push the sectag to DockerHub
-  #doDockerPush $dockerRepo $sectag
+  doDockerPush $dockerRepo $sectag
   
   #give the image 30 sec before we pull it down to use it.
   #sleep 30
   
   #Build the Test Application for the specific version
-  #buildTestApplication
+  buildTestApplication
 
   #Test the application that was just launched.  For a specific version
   #testApplication
@@ -57,8 +55,8 @@ checkForVulnerabilities(){
   echo "check base for vulnerabilities"
   source check_base_for_vulnerabilities $dockerRepo $tag
   
-  echo $?
-  echo $REBUILD_STATUS
+  test -n $REBUILD_STATUS
+
   if [ $REBUILD_STATUS == true ]
   then 
     echo "There ARE vulnerabilities to patch"
@@ -79,11 +77,14 @@ doDockerPush(){
 }
 
 buildTestApplication(){
+  echo "Building local docker image to test"
   #going to need to figure out how to do this.  Probably want to pull down an easy repo (IDS for jdk-12?). 
-  #mvn clean install -Ddocker.baseImage=$dockerRepo -Ddocker.baseVersion=$sectag -Prelease
+  git clone git@github.com:department-of-veterans-affairs/health-apis-ids.git $WORKSPACE
+  cd $WORKSPACE/health-apis-ids
+  mvn clean install io.fabric8:docker-maven-plugin:build -Ddocker.baseImage=$dockerRepo -Ddocker.baseVersion=$sectag -Prelease
+
+  docker images
   #this will create a local docker image.  WIll need to figure out how to launch it standalone to do any kind of testing....]
-  
-  echo $tag
 }
 
 testApplication(){
