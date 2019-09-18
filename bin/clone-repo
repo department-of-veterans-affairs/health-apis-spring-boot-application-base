@@ -3,11 +3,18 @@ set -euo pipefail
 
 REPO=$1
 
+echo $REPO
+
 test -n "$REPO"
 test -n "$GITHUB_USERNAME_PASSWORD"
 
 cd $WORKSPACE
+
+pwd
+
 if [ -d $REPO ]; then rm -rf $REPO; fi
+
+echo 'before configs?'
 
 #
 # VA.
@@ -20,9 +27,13 @@ if [ -d $REPO ]; then rm -rf $REPO; fi
 if [ ! -d ~/.git ]; then mkdir -p ~/.git; fi
 git config --global http.sslVerify false
 
+echo 'about to clone'
 
 #
 # Clone away my friend.
 #
 git clone "https://$GITHUB_USERNAME_PASSWORD@github.com/department-of-veterans-affairs/$REPO.git"
+
+echo 'cloned?'
+
 cd $REPO
