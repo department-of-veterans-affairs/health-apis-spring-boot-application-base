@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO=$1
+
+test -n "$REPO"
+test -n "$GITHUB_USERNAME_PASSWORD"
+
+cd $WORKSPACE
+if [ -d $REPO ]; then rm -rf $REPO; fi
+
+#
+# VA.
+# What are you doing.
+# VA.
+# Staaaahp.
+#
+# omg pls 2 staph borking Github.com certs kthxbye
+#
+if [ ! -d ~/.git ]; then mkdir -p ~/.git; fi
+git config --global http.sslVerify false
+
+
+#
+# Clone away my friend.
+#
+git clone "https://$GITHUB_USERNAME_PASSWORD@github.com/department-of-veterans-affairs/$REPO.git"
+cd $REPO
