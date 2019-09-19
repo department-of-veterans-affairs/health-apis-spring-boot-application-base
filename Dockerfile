@@ -4,7 +4,7 @@ RUN yum update -y -q -q \
     && yum install -y -q -q yum-utils \
     && yum install -y -q -q gettext openssh-clients git \
     && yum install -y -q -q zip unzip \
-    && yum install -y -q -q java-1.12.0-openjdk
+    && yum install -y -q -q java-1.8.0-openjdk \
     && yum install -y -q -q dos2unix \
     && yum install -y -q -q maven \
     && yum clean all
