@@ -87,6 +87,7 @@ buildTestApplication(){
   #going to need to figure out how to do this.  Probably want to pull down an easy repo (IDS for jdk-12?).
   clone-repo "health-apis-ids"
   cd "health-apis-ids"
+  git checkout 1.1.6
   mvn clean install io.fabric8:docker-maven-plugin:build -Ddocker.baseImage=$dockerRepo -Ddocker.baseVersion=$sectag -Prelease
 
   docker images
