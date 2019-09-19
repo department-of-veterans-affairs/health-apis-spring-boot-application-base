@@ -20,4 +20,4 @@ RUN curl -skLo /usr/local/bin/jq https://github.com/stedolan/jq/releases/downloa
 
 RUN yum install -yqq openssl
 
-RUN mkdir /home/jenkins
+RUN mkdir /home/jenkins && chown 1000:1000 home/jenkins
