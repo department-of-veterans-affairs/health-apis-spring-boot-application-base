@@ -5,6 +5,7 @@ RUN yum update -y -q -q \
     && yum install -y -q -q gettext openssh-clients git \
     && yum install -y -q -q zip unzip \
     && yum install -y -q -q dos2unix \
+    && yum install -y -q -q maven \
     && yum clean all
 
 
