@@ -86,7 +86,7 @@ then
     echo "Found Image in Qualys Scans"
 else
     echo "Cannot get vulnerability information"
-    echo "Error Message: $(cat $WORK/app-base-$TAG-docker.json | jq '.message')"
+    echo "Error Message: $(cat $QUALYS_SCAN_RESULT | jq '.message')"
     exit 1
 fi
 
