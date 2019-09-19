@@ -25,7 +25,7 @@ echo 'before configs?'
 #
 # omg pls 2 staph borking Github.com certs kthxbye
 #
-if [ ! -d ~/.git ]; then sudo su & mkdir -p ~/.git; fi
+if [ ! -d ~/.git ]; mkdir -p ~/.git; fi
 
 git config --global http.sslVerify false
 

@@ -21,10 +21,15 @@ set -euo pipefail
 #
 export PATH=$WORKSPACE/bin:$PATH
 
+echo 'workspace is $WORKSPACE'
+
 doUpgrade() {
   dockerRepo=vasdvp/health-apis-spring-boot-application-base
   tag=$1
   sectag=$1-sec-scan
+
+  docker login -u DOCKER_USERNAME -p DOCKER_PASSWORD
+  cat $HOME/.docker/config.json
 
   #Check to see if there are vulnerabilities in the image.
   checkForVulnerabilities
