@@ -42,23 +42,6 @@ doUpgrade() {
   doDockerPush $dockerRepo $sectag
 }
 
-moveMe(){
-  #give the image 30 sec before we pull it down to use it.
-  #sleep 30
-  
-  #Build the Test Application for the specific version
-  #buildTestApplication
-
-  #Test the application that was just launched.  For a specific version
-  #testApplication
-
-  #Tag the sectag as the regular tag
-  #retagDockerImage $dockerRepo $sectag $tag
-
-  #Push to repo with real tag
-  #doDockerPush $dockerRepo $tag
-}
-
 checkForVulnerabilities(){
   echo "check base for vulnerabilities"
   source check_base_for_vulnerabilities $dockerRepo $tag
