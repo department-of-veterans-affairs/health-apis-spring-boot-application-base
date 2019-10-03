@@ -22,16 +22,12 @@ set -euo pipefail
 export PATH=$WORKSPACE/bin:$PATH
 
 buildTestApplication(){
-if [ $1 == 12 ]
-then
-  buildTestApplicationJDK12()
-elif [ $1 == 8 ]
-then
-  buildTestApplicationJDK8()
-else
-  echo "Not a supported JDK version"
-fi
-}
+
+case "$$1" in
+  8) buildTestApplicationJDK8 ;;
+  12) buildTestApplicationJDK12 ;;
+  *) echo "Unknown version: $VERSION. Supported versions are 8 and 12." && exit 1 ;;
+esac
 
 buildTestApplicationJDK8(){
   echo "WE DONT HAVE A WAY TO TEST JDK 8"
