@@ -40,12 +40,14 @@ doUpgrade() {
   
   #Push the sectag to DockerHub
   doDockerPush $dockerRepo $sectag
-  
+}
+
+moveMe(){
   #give the image 30 sec before we pull it down to use it.
   #sleep 30
   
   #Build the Test Application for the specific version
-  buildTestApplication
+  #buildTestApplication
 
   #Test the application that was just launched.  For a specific version
   #testApplication
@@ -85,13 +87,11 @@ doDockerPush(){
 buildTestApplication(){
   echo "Building local docker image to test"
   #going to need to figure out how to do this.  Probably want to pull down an easy repo (IDS for jdk-12?).
-  clone-repo "health-apis-ids"
-  cd "health-apis-ids"
-  git checkout 1.1.6
-  mvn clean install io.fabric8:docker-maven-plugin:build -Ddocker.baseImage=$dockerRepo -Ddocker.baseVersion=$sectag -Prelease
+  clone-repo "health-apis-mock-eligibility-and-enrollment"
+  cd "health-apis-mock-eligibility-and-enrollment"
+  mvn clean install io.fabric8:docker-maven-plugin:build -Ddocker.baseImage=$dockerRepo -Ddocker.baseVersion=$sectag -Ddocker.imageName="health-apis-mock-eligibility-and-enrollment-canary" -Ddocker.tag="sec-scan" -Prelease
 
   docker images
-  #this will create a local docker image.  WIll need to figure out how to launch it standalone to do any kind of testing....]
 }
 
 testApplication(){

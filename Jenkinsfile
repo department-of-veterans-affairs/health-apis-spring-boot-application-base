@@ -78,6 +78,36 @@ pipeline {
         }
       }
     }
+    /*
+    * The point of this stage is to check to see if vulnerabilities exist
+    * If they do:  Rebuild spring-boot-application-base and tag it
+    * If they don't:  End build
+    */
+    stage('PreBuild') {
+      when {
+        expression { return env.BUILD_MODE != 'ignore' }
+        /*
+        expression { return env.BRANCH_NAME == 'master' }
+        */
+      }
+      agent{
+        docker {
+          registryUrl 'https://index.docker.io/v1/'
+          registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
+          image 'vasdvp/triage-toolkit:latest'
+          alwaysPull true
+          args "--entrypoint='' --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker"
+        } 
+      }
+      steps {
+        saunter('./build.sh')
+      }
+    }
+    /*
+    * If it got this far it means vulnerabilities were found
+    * Next step is to use that new image and build a local canary build of an application
+    * This will have an overwritten parent docker image to be the new base we just made
+    */
     stage('Build') {
       when {
         expression { return env.BUILD_MODE != 'ignore' }
@@ -85,8 +115,65 @@ pipeline {
         expression { return env.BRANCH_NAME == 'master' }
         */
       }
+      agent{
+        docker {
+          registryUrl 'https://index.docker.io/v1/'
+          registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
+          image 'maven:3.6-jdk-12'
+          alwaysPull true
+          args "--entrypoint='' --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker"
+        } 
+      }
       steps {
-        saunter('./build.sh')
+        saunter('./buildTestApplication.sh')
+      }
+    }
+    /*
+    * Use the newly created docker image with the new parent
+    * Deploy the application within in the image
+    * Test new container.
+    */
+    stage('Test'){
+      when {
+        expression { return env.BUILD_MODE != 'ignore' }
+        /*
+        expression { return env.BRANCH_NAME == 'master' }
+        */
+      }
+      agent{
+        docker {
+          registryUrl 'https://index.docker.io/v1/'
+          registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
+          image 'security-ids-canary:sec-scan'
+          alwaysPull false
+          args "--entrypoint='' --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker"
+        } 
+      }
+      steps {
+        saunter('./dosomething2.sh')
+      }
+    }
+    /*
+    * Only job is to push new parent to repo with the real tag that other applications will use.
+    */
+    stage('PostTest') {
+      when {
+        expression { return env.BUILD_MODE != 'ignore' }
+        /*
+        expression { return env.BRANCH_NAME == 'master' }
+        */
+      }
+      agent{
+        docker {
+          registryUrl 'https://index.docker.io/v1/'
+          registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
+          image 'vasdvp/triage-toolkit:latest'
+          alwaysPull true
+          args "--entrypoint='' --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker"
+        } 
+      }
+      steps {
+        saunter('./pushParent.sh')
       }
     }
     /*
