@@ -9,13 +9,11 @@ test -n "$REPO"
 test -n "$GITHUB_USERNAME_PASSWORD"
 
 cd $WORKSPACE
-echo "workspace is $WORKSPACE"
-
-pwd
-
 if [ -d $REPO ]; then rm -rf $REPO; fi
 
 echo 'before configs?'
+
+yum install git -y
 
 #
 # VA.
