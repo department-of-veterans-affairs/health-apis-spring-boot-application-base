@@ -52,8 +52,6 @@ buildTestApplicationJDK12(){
   #
 
   mvn $MVN_ARGS clean install io.fabric8:docker-maven-plugin:build -Ddocker.baseImage=$dockerRepo -Ddocker.baseVersion='jdk-12-sec-scan' -Ddocker.imageName="health-apis-mock-eligibility-and-enrollment-canary" -Ddocker.tag="sec-scan" -Prelease
-
-  docker images
 }
 
 if [ "$APPLICATION_BASE_VERSION" == "none" ]
