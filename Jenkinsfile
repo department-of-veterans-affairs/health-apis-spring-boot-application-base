@@ -28,8 +28,6 @@ def sendDeployMessage(channelName) {
   )
 }
 
-final DOCKER_ARGS = "--privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/root/.m2/repository -v /var/lib/jenkins/.ssh:/root/.ssh -v /var/run/docker.sock:/var/saunter/docker.sock -v /var/lib/docker:/var/lib/docker -v /etc/docker/daemon.json:/etc/docker/daemon.json"
-
 pipeline {
   options {
     disableConcurrentBuilds()
@@ -112,7 +110,7 @@ pipeline {
           filename "DockerfileMaven"
           registryUrl 'https://index.docker.io/v1/'
           registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
-          args "--entrypoint='' --privileged -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh"
+          args "--entrypoint='' --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh"
         } 
       }
       steps {
