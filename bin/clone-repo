@@ -13,8 +13,6 @@ if [ -d $REPO ]; then rm -rf $REPO; fi
 
 echo 'before configs?'
 
-yum install git -y
-
 #
 # VA.
 # What are you doing.
