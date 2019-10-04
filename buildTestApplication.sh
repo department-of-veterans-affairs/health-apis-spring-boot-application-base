@@ -23,7 +23,7 @@ export PATH=$WORKSPACE/bin:$PATH
 
 buildTestApplication(){
 
-  case "$$1" in
+  case "$1" in
     8) buildTestApplicationJDK8 ;;
     12) buildTestApplicationJDK12 ;;
     *) echo "Unknown version: $VERSION. Supported versions are 8 and 12." && exit 1 ;;
