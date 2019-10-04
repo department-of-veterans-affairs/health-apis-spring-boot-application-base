@@ -41,7 +41,13 @@ pipeline {
   parameters {
     booleanParam(name: 'DEBUG', defaultValue: false, description: "Enable debugging output")
     choice(name: 'APPLICATION_BASE_VERSION', choices: ['none','8','12'], description: "Build the base image for this Java Version")
-    }
+  }
+  agent{
+    dockerfile {
+      filename "DockerfileDocker"
+      args "--entrypoint='' --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker"
+    } 
+  }
   triggers {
     upstream(upstreamProjects: 'department-of-veterans-affairs/health-apis-spring-boot-application-base/master', threshold: hudson.model.Result.SUCCESS)
   }
@@ -83,12 +89,6 @@ pipeline {
         /*
         expression { return env.BRANCH_NAME == 'master' }
         */
-      }
-      agent{
-        dockerfile {
-          filename "DockerfileDocker"
-          args "--entrypoint='' --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker"
-        } 
       }
       steps {
         saunter('./build.sh')
@@ -151,13 +151,6 @@ pipeline {
         /*
         expression { return env.BRANCH_NAME == 'master' }
         */
-      }
-      agent{
-        dockerfile {
-          registryUrl 'https://index.docker.io/v1/'
-          registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
-          args "--entrypoint='' --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker"
-        } 
       }
       steps {
         saunter('./pushParent.sh')
