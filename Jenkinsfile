@@ -11,6 +11,14 @@ def saunter(scriptName) {
       credentialsId: 'DOCKER_SOURCE_REGISTRY',
       variable: 'DOCKER_SOURCE_REGISTRY'),
     usernamePassword(
+      credentialsId: 'HEALTH_APIS_RELEASES_NEXUS_USERNAME_PASSWORD',
+      usernameVariable: 'HEALTH_APIS_RELEASES_NEXUS_USERNAME',
+      passwordVariable: 'HEALTH_APIS_RELEASES_NEXUS_PASSWORD'),
+    usernamePassword(
+      credentialsId: 'VASDVP_RELEASES_NEXUS_USERNAME_PASSWORD',
+      usernameVariable: 'VASDVP_RELEASES_NEXUS_USERNAME',
+      passwordVariable: 'VASDVP_RELEASES_NEXUS_PASSWORD'),
+    usernamePassword(
       credentialsId: 'QUALYS_USERNAME_PASSWORD',
       usernameVariable: 'QUALYS_USERNAME',
       passwordVariable: 'QUALYS_PASSWORD')
