@@ -40,6 +40,22 @@ buildTestApplicationJDK12(){
   #going to need to figure out how to do this.  Probably want to pull down an easy repo (IDS for jdk-12?).
   clone-repo "health-apis-mock-eligibility-and-enrollment"
   cd "health-apis-mock-eligibility-and-enrollment"
+
+  MVN_ARGS="--settings $WORKSPACE/settings.xml --batch-mode"
+  MVN_ARGS+=" -Ddocker.username=$DOCKER_USERNAME -Ddocker.password=$DOCKER_PASSWORD"
+  MVN_ARGS+=" -Dvasdvp-releases.nexus.user=$VASDVP_RELEASES_NEXUS_USERNAME -Dvasdvp-releases.nexus.password=$VASDVP_RELEASES_NEXUS_PASSWORD"
+  MVN_ARGS+=" -Dhealth-apis-releases.nexus.user=$HEALTH_APIS_RELEASES_NEXUS_USERNAME -Dhealth-apis-releases.nexus.password=$HEALTH_APIS_RELEASES_NEXUS_PASSWORD"
+  #
+  # By default, we'll automatically upgrade gov.va.dvp. But if this project belongs
+  # do a different group, we'll also want to upgrade that too.
+  #
+  UPGRADE_GROUP_IDS="gov.va.api.health"
+  GROUP_ID=$(mvn $MVN_ARGS -N -q org.codehaus.mojo:exec-maven-plugin:exec \
+        -Dexec.executable='echo' \
+        -Dexec.args='${project.groupId}')
+  [ "$GROUP_ID" != "$UPGRADE_GROUP_IDS" ] && UPGRADE_GROUP_IDS+=",$GROUP_ID" \
+  && MVN_ARGS+=" -P$GROUP_ID"
+
   mvn clean install io.fabric8:docker-maven-plugin:build -Ddocker.baseImage=$dockerRepo -Ddocker.baseVersion='jdk-12-sec-scan' -Ddocker.imageName="health-apis-mock-eligibility-and-enrollment-canary" -Ddocker.tag="sec-scan" -Prelease
 
   docker images
