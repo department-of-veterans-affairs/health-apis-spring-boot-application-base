@@ -40,10 +40,14 @@ buildTestApplicationJDK12(){
   #going to need to figure out how to do this.  Probably want to pull down an easy repo (IDS for jdk-12?).
   clone-repo "health-apis-mock-eligibility-and-enrollment"
 
+  echo 'it finished cline-repo script?'
+
   MVN_ARGS="--settings $WORKSPACE/settings.xml --batch-mode \
             -Ddocker.username=$DOCKER_USERNAME -Ddocker.password=$DOCKER_PASSWORD \
             -Dvasdvp-releases.nexus.user=$VASDVP_RELEASES_NEXUS_USERNAME -Dvasdvp-releases.nexus.password=$VASDVP_RELEASES_NEXUS_PASSWORD \
             -Dhealth-apis-releases.nexus.user=$HEALTH_APIS_RELEASES_NEXUS_USERNAME -Dhealth-apis-releases.nexus.password=$HEALTH_APIS_RELEASES_NEXUS_PASSWORD"
+
+  echo 'mvn args?'
   #
   # By default, we'll automatically upgrade gov.va.dvp. But if this project belongs
   # do a different group, we'll also want to upgrade that too.
