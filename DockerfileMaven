@@ -1,0 +1,4 @@
+FROM vasdvp/health-apis-maven:3.6-jkd-12
+
+RUN mkdir /home/jenkins && chown 1000:1000 /home/jenkins
+

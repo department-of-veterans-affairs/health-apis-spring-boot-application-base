@@ -93,8 +93,7 @@ pipeline {
       }
       agent{
         dockerfile {
-          registryUrl 'https://index.docker.io/v1/'
-          registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
+          filename "DockerfileDocker"
           args "--entrypoint='' --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker"
         } 
       }
@@ -116,12 +115,9 @@ pipeline {
         */
       }
       agent{
-        docker {
-          registryUrl 'https://index.docker.io/v1/'
-          registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
-          image 'vasdvp/health-apis-maven:3.6-jdk-12'
-          alwaysPull true
-          args "--entrypoint='' --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh"
+        dockerfile {
+          filename "DockerfileMaven"
+          args "--entrypoint='' -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh"
         } 
       }
       steps {
