@@ -35,11 +35,12 @@ buildTestApplicationJDK8(){
 }
 
 buildTestApplicationJDK12(){
+  dockerRepo=vasdvp/health-apis-spring-boot-application-base
   echo "Building local docker image to test"
   #going to need to figure out how to do this.  Probably want to pull down an easy repo (IDS for jdk-12?).
   clone-repo "health-apis-mock-eligibility-and-enrollment"
   cd "health-apis-mock-eligibility-and-enrollment"
-  mvn clean install io.fabric8:docker-maven-plugin:build -Ddocker.baseImage=$dockerRepo -Ddocker.baseVersion=$sectag -Ddocker.imageName="health-apis-mock-eligibility-and-enrollment-canary" -Ddocker.tag="sec-scan" -Prelease
+  mvn clean install io.fabric8:docker-maven-plugin:build -Ddocker.baseImage=$dockerRepo -Ddocker.baseVersion='jdk-12-sec-scan' -Ddocker.imageName="health-apis-mock-eligibility-and-enrollment-canary" -Ddocker.tag="sec-scan" -Prelease
 
   docker images
 }
