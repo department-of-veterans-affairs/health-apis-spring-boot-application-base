@@ -64,6 +64,7 @@ test -n $QUALYS_USERNAME
 test -n $QUALYS_PASSWORD
 
 echo "Pulling down $DOCKER_REPO:$TAG to get SHA to check Qualys"
+docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 docker pull $DOCKER_REPO:$TAG
 
 # Get the SHA of the current base image and remove leading and trailing "
