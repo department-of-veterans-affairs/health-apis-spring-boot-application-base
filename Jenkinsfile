@@ -110,6 +110,8 @@ pipeline {
       agent{
         dockerfile {
           filename "DockerfileMaven"
+          registryUrl 'https://index.docker.io/v1/'
+          registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
           args "--entrypoint='' -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh"
         } 
       }
