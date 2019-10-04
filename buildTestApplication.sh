@@ -39,6 +39,7 @@ buildTestApplicationJDK12(){
   echo "Building local docker image to test"
   #going to need to figure out how to do this.  Probably want to pull down an easy repo (IDS for jdk-12?).
   clone-repo "health-apis-mock-eligibility-and-enrollment"
+  cd "health-apis-mock-eligibility-and-enrollment"
 
   echo 'it finished cline-repo script?'
 
