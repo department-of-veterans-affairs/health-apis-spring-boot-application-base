@@ -147,7 +147,7 @@ pipeline {
         } 
       }
       steps {
-        saunter('./buildCanary.sh')
+        saunter('./testCanary.sh')
       }
     }
     /*
