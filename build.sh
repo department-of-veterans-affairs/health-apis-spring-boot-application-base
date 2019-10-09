@@ -67,27 +67,6 @@ doDockerPush(){
   docker push $1:$2
 }
 
-buildTestApplication(){
-  echo "Building local docker image to test"
-  #going to need to figure out how to do this.  Probably want to pull down an easy repo (IDS for jdk-12?).
-  clone-repo "health-apis-mock-eligibility-and-enrollment"
-  cd "health-apis-mock-eligibility-and-enrollment"
-  mvn clean install io.fabric8:docker-maven-plugin:build -Ddocker.baseImage=$dockerRepo -Ddocker.baseVersion=$sectag -Ddocker.imageName="health-apis-mock-eligibility-and-enrollment-canary" -Ddocker.tag="sec-scan" -Prelease
-
-  docker images
-}
-
-testApplication(){
-  #will require different applications per spring-boot-application-base (8 and 12?)?
-  #Test the local docker image.  Running some kind of deploy-local.sh and test-local.sh
-  #if it passes then we are good
-  echo $tag
-}
-
-retagDockerImage(){
-  docker tag $1:$2 $1:$3
-}
-
 if [ "$APPLICATION_BASE_VERSION" == "none" ]
 then
   echo "Spring Boot Appication Base Upgrade"
