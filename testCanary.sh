@@ -21,7 +21,7 @@ set -euo pipefail
 #
 export PATH=$WORKSPACE/bin:$PATH
 
-TestApplication(){
+testApplication(){
 
   case "$1" in
     8) testApplicationJDK8 ;;
