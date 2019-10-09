@@ -35,7 +35,7 @@ testApplicationJDK8(){
 }
 
 testApplicationJDK12(){
-  curl -vk "http://localhost:8080/healthz"
+  curl -vk "https://localhost:9090/actuator/health"
 }
 
 if [ "$APPLICATION_BASE_VERSION" == "none" ]
