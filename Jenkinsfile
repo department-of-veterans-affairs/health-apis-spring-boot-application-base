@@ -143,7 +143,7 @@ pipeline {
           registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
           image 'vasdvp/health-apis-mock-eligibility-and-enrollment-canary:sec-scan'
           alwaysPull false
-          args "--entrypoint='/tmp/entrypoint.sh'"
+          args "--entrypoint='/tmp/entrypoint.sh' -e 'AWS_BUCKET_NAME=app-config-storage-qa' -e 'AWS_APP_NAME=1691-mock-ee-1-0-26-a60ceb5/mock-ee'"
         } 
       }
       steps {
