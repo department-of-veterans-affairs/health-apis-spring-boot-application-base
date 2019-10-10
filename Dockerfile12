@@ -21,7 +21,7 @@ ADD "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" /tmp/aws2/awscli-bundle
 RUN cd /tmp/aws2 && chmod 777 /tmp/aws2/awscli-bundle.zip && unzip /tmp/aws2/aws*.zip && /tmp/aws2/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 
 
-RUN chown 1000:1000 /opt/va
+RUN mkdir /opt/va && chown 1000:1000 /opt/va
 
 COPY /entrypoint.sh /tmp/entrypoint.sh
 RUN chmod 777 /tmp/entrypoint.sh

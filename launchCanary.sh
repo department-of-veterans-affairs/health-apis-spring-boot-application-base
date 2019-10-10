@@ -35,6 +35,10 @@ testApplicationJDK8(){
 }
 
 testApplicationJDK12(){
+
+  cd /opt/va
+  ls
+
   echo 'ee.header.username=test \
   ee.header.password=test' > /opt/va/application.properties
 
