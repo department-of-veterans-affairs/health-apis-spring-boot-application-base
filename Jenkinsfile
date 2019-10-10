@@ -131,23 +131,40 @@ pipeline {
     * Test new container.
     */
     stage('Test'){
-      when {
-        expression { return env.BUILD_MODE != 'ignore' }
-        /*
-        expression { return env.BRANCH_NAME == 'master' }
-        */
-      }
-      agent{
-        docker {
-          registryUrl 'https://index.docker.io/v1/'
-          registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
-          image 'vasdvp/health-apis-mock-eligibility-and-enrollment-canary:sec-scan'
-          alwaysPull false
-          args "--entrypoint='' --privileged"
-        } 
-      }
-      steps {
-        saunter('./testCanary.sh')
+      parallel{  
+        //Parallel stages first launches the Canary Image
+        stage('launchCanary'){
+          when {
+            expression { return env.BUILD_MODE != 'ignore' }
+            /*
+            expression { return env.BRANCH_NAME == 'master' }
+            */
+          }
+          agent{
+            docker {
+              registryUrl 'https://index.docker.io/v1/'
+              registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
+              image 'vasdvp/health-apis-mock-eligibility-and-enrollment-canary:sec-scan'
+              alwaysPull false
+              args "--entrypoint='' --privileged"
+            } 
+          }
+          steps {
+            saunter('./launchCanary.sh')
+          }
+        }
+        //Second Parallel stage to test the Canary Image
+        stage('testCanary'){
+          when {
+            expression { return env.BUILD_MODE != 'ignore' }
+            /*
+            expression { return env.BRANCH_NAME == 'master' }
+            */
+          }
+          steps {
+            saunter('./testCanary.sh')
+          }
+        }
       }
     }
     /*

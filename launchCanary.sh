@@ -35,8 +35,10 @@ testApplicationJDK8(){
 }
 
 testApplicationJDK12(){
-  sleep 60
-  curl -vk "https://localhost:9090/actuator/health"
+  echo 'ee.header.username=test\
+  ee.header.password=test' > /opt/va/application.properties
+
+  sh /tmp/entrypoint.sh\
 }
 
 if [ "$APPLICATION_BASE_VERSION" == "none" ]
