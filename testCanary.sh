@@ -35,8 +35,11 @@ testApplicationJDK8(){
 }
 
 testApplicationJDK12(){
-  ls
-  pwd
+  echo 'ee.header.username=test\
+  ee.header.password=test' > application.properties
+
+  sh /tmp/entrypoint.sh
+
   curl -vk "https://localhost:9090/actuator/health"
 }
 
