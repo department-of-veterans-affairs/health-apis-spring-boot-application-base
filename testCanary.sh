@@ -36,6 +36,7 @@ testApplicationJDK8(){
 
 testApplicationJDK12(){
   ls
+  pwd
   curl -vk "https://localhost:9090/actuator/health"
 }
 
