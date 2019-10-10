@@ -36,7 +36,7 @@ testApplicationJDK8(){
 
 testApplicationJDK12(){
   echo 'ee.header.username=test\
-  ee.header.password=test' > application.properties
+  ee.header.password=test' > /opt/va/application.properties
 
   sh /tmp/entrypoint.sh
 
