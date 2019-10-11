@@ -35,9 +35,8 @@ testApplicationJDK8(){
 }
 
 testApplicationJDK12(){
-  clone repo 'health-apis-mock-eligibility-and-enrollment-deployment'
 
-  sleep 60
+  sleep 15
 
   # Run the docker image with the configs ^
   docker run \
