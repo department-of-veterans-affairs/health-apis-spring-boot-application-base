@@ -43,6 +43,9 @@ testApplicationJDK12(){
 
   sleep 15
 
+
+  curl -vk http://localhost:9090/v0/ws/actuator/health
+
   # Run the docker image with the required args
   # IF THE ARGS CHANGE THIS DOES TOO
   docker run \
@@ -51,7 +54,7 @@ testApplicationJDK12(){
     'vasdvp/health-apis-mock-ee-tests:latest' \
     'regression-test' \
     --base-path='' \
-    --endpoint-domain-name=localhost \
+    --endpoint-domain-name=localhost:9090 \
     --environment=local \
     --username=$MOCK_EE_USERNAME \
     --password=$MOCK_EE_PASSWORD \

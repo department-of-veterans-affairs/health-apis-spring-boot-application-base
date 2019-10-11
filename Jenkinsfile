@@ -135,6 +135,7 @@ pipeline {
     * Test new container.
     */
     stage('Test'){
+      failFast true
       parallel{  
         //Parallel stages first launches the Canary Image
         stage('launchCanary'){
