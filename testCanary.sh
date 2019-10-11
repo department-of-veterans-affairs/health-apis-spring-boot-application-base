@@ -36,13 +36,19 @@ testApplicationJDK8(){
 
 testApplicationJDK12(){
 
+  docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+
+  # Pull the docker image
+  docker pull 'vasdvp/health-apis-mock-ee-tests:latest'
+
   sleep 15
 
-  # Run the docker image with the configs ^
+  # Run the docker image with the required args
+  # IF THE ARGS CHANGE THIS DOES TOO
   docker run \
     --rm \
     --network host \
-    'vasdvp/health-apis-mock-ee-test:latest' \
+    'vasdvp/health-apis-mock-ee-tests:latest' \
     'regression-test' \
     --base-path='' \
     --endpoint-domain-name=localhost \
