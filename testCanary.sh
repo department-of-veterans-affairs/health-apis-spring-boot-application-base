@@ -43,8 +43,7 @@ testApplicationJDK12(){
 
   sleep 30
 
-
-  curl -vk http://localhost:9090/v0/ws/actuator/health
+  curl -vk http://localhost:9090/actuator/health
 
   # Run the docker image with the required args
   # IF THE ARGS CHANGE THIS DOES TOO
