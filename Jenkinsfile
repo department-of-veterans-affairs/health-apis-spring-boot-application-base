@@ -151,7 +151,7 @@ pipeline {
               registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
               image 'vasdvp/health-apis-mock-eligibility-and-enrollment-canary:sec-scan'
               alwaysPull false
-              args "--entrypoint='' --privileged"
+              args "--entrypoint='' --privileged -p 9090:9090"
             } 
           }
           steps {
