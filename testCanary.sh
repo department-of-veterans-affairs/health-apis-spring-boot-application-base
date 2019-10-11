@@ -52,7 +52,7 @@ testApplicationJDK12(){
     'regression-test' \
     --base-path='' \
     --endpoint-domain-name=localhost \
-    --environemnt=local \
+    --environment=local \
     --username=$MOCK_EE_USERNAME \
     --password=$MOCK_EE_PASSWORD \
     --icn=42
