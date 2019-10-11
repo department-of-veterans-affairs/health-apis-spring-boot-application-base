@@ -35,8 +35,21 @@ testApplicationJDK8(){
 }
 
 testApplicationJDK12(){
+  clone repo 'health-apis-mock-eligibility-and-enrollment-deployment'
+
   sleep 60
-  curl -vk "https://localhost:9090/actuator/health"
+
+  # Run the docker image with the configs ^
+  docker run \
+    --rm \
+    --network host \
+    'vasdvp/health-apis-mock-ee-test:latest' \
+    'regression-test' \
+    --base-path='' \
+    --endpoint-domain-name=localhost \
+    --username=$MOCK_EE_USERNAME \
+    --password=$MOCK_EE_PASSWORD \
+    --icn=42
 }
 
 if [ "$APPLICATION_BASE_VERSION" == "none" ]

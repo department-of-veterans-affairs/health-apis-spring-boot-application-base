@@ -21,7 +21,11 @@ def saunter(scriptName) {
     usernamePassword(
       credentialsId: 'QUALYS_USERNAME_PASSWORD',
       usernameVariable: 'QUALYS_USERNAME',
-      passwordVariable: 'QUALYS_PASSWORD')
+      passwordVariable: 'QUALYS_PASSWORD'),
+    usernamePassword(
+      credentialsId: 'MOCK_EE_CREDENTIALS',
+      usernameVariable: 'MOCK_EE_USERNAME',
+      passwordVariable: 'MOCK_EE_PASSWORD')
   ]) {
     echo "APPLICATION_BASE_VERSION = ${env.APPLICATION_BASE_VERSION}"
     sh script: scriptName
