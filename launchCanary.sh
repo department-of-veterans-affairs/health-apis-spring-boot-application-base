@@ -42,9 +42,13 @@ testApplicationJDK12(){
   echo 'ee.header.username=test \
   ee.header.password=test' > /opt/va/application.properties
 
-  /tmp/entrypoint.sh &
+  sh /tmp/entrypoint.sh &
 
-  sleep 300
+  echo 'it kept going?'
+
+  sleep 30
+
+  echo 'it slept for 30?'
 }
 
 if [ "$APPLICATION_BASE_VERSION" == "none" ]
