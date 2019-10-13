@@ -47,17 +47,18 @@ testApplicationJDK12(){
 
   # Run the docker image with the required args
   # IF THE ARGS CHANGE THIS DOES TOO
-  docker run \
-    --rm \
-    --network host \
-    'vasdvp/health-apis-mock-ee-tests:latest' \
-    'regression-test' \
-    --base-path='' \
-    --endpoint-domain-name=localhost:9090 \
-    --environment=local \
-    --username=$MOCK_EE_USERNAME \
-    --password=$MOCK_EE_PASSWORD \
-    --icn=42
+  
+  #docker run \
+  #  --rm \
+  #  --network host \
+  #  'vasdvp/health-apis-mock-ee-tests:latest' \
+  #  'regression-test' \
+  #  --base-path='' \
+  #  --endpoint-domain-name=localhost:9090 \
+  #  --environment=local \
+  #  --username=$MOCK_EE_USERNAME \
+  #  --password=$MOCK_EE_PASSWORD \
+  #  --icn=42
 }
 
 if [ "$APPLICATION_BASE_VERSION" == "none" ]

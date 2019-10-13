@@ -11,8 +11,6 @@ test -n "$GITHUB_USERNAME_PASSWORD"
 cd $WORKSPACE
 if [ -d $REPO ]; then rm -rf $REPO; fi
 
-echo 'before configs?'
-
 #
 # VA.
 # What are you doing.
@@ -32,7 +30,5 @@ echo 'about to clone'
 # Clone away my friend.
 #
 git clone "https://$GITHUB_USERNAME_PASSWORD@github.com/department-of-veterans-affairs/$REPO.git"
-
-echo 'cloned?'
 
 cd $REPO

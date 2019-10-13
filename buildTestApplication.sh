@@ -35,23 +35,25 @@ buildTestApplicationJDK8(){
 }
 
 buildTestApplicationJDK12(){
-  dockerRepo=vasdvp/health-apis-spring-boot-application-base
   echo "Building local docker image to test"
   #going to need to figure out how to do this.  Probably want to pull down an easy repo (IDS for jdk-12?).
   clone-repo "health-apis-mock-eligibility-and-enrollment"
   cd "health-apis-mock-eligibility-and-enrollment"
 
-  echo 'it finished cline-repo script?'
-
   MVN_ARGS="-Ddocker.username=$DOCKER_USERNAME -Ddocker.password=$DOCKER_PASSWORD \
             -Dvasdvp-releases.nexus.user=$VASDVP_RELEASES_NEXUS_USERNAME -Dvasdvp-releases.nexus.password=$VASDVP_RELEASES_NEXUS_PASSWORD \
             -Dhealth-apis-releases.nexus.user=$HEALTH_APIS_RELEASES_NEXUS_USERNAME -Dhealth-apis-releases.nexus.password=$HEALTH_APIS_RELEASES_NEXUS_PASSWORD"
-  #
-  # By default, we'll automatically upgrade gov.va.dvp. But if this project belongs
-  # do a different group, we'll also want to upgrade that too.
-  #
 
-  mvn $MVN_ARGS clean install io.fabric8:docker-maven-plugin:build -Ddocker.baseImage=$dockerRepo -Ddocker.baseVersion='jdk-12-sec-scan' -Ddocker.imageName="health-apis-mock-eligibility-and-enrollment-canary" -Ddocker.tag="sec-scan" -Prelease
+  # This line does a lot
+  # It kicks off a new build with all the mvn properties defined above
+  # io.fabric8:docker-maven-plugin:build allows us to go directly to the build phase
+  # The overwriteen parameters are specifying that we:
+  # - Pull the NEW LOCAL spring-boot-application-base with new tag
+  # - Save the output as mock-eligibility-enrollment-canary with new tag
+  # The -Prelease and io.fabric8:docker-maven-plugin:build together allow for the creation of a local docker image
+  # The name and tag of the image is defined by the overwrites described above ^.
+
+  mvn $MVN_ARGS clean install io.fabric8:docker-maven-plugin:build -Ddocker.baseImage='vasdvp/health-apis-spring-boot-application-base' -Ddocker.baseVersion='jdk-12-sec-scan' -Ddocker.imageName="health-apis-mock-eligibility-and-enrollment-canary" -Ddocker.tag="sec-scan" -Prelease
 }
 
 if [ "$APPLICATION_BASE_VERSION" == "none" ]
