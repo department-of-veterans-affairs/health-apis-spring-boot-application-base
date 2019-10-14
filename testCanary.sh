@@ -42,7 +42,7 @@ testApplicationJDK12(){
     -p 9090:9090 \
     -d \
     --entrypoint '/bin/bash' \
-    health-apis-mock-eligibility-and-enrollment-canary:sec-scan \
+    vasdvp/health-apis-mock-eligibility-and-enrollment-canary:sec-scan \
     -c 'echo -e "ee.header.username=test\nee.header.password=test" > /opt/va/application.properties; \
     /tmp/entrypoint.sh')
   
