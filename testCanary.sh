@@ -42,7 +42,7 @@ testApplicationJDK12(){
     -p 9090:9090 \
     -d \
     --entrypoint '/bin/bash' \
-    vasdvp/health-apis-mock-ee \
+    vasdvp/health-apis-spring-boot-application-base:jdk-12-sec-scan \
     -c 'echo -e "ee.header.username=test\nee.header.password=test" > /opt/va/application.properties; \
     /tmp/entrypoint.sh')
   
@@ -71,6 +71,8 @@ testApplicationJDK12(){
     --icn=42
 
   docker ps -a
+
+  #What if the tests fail... This line will never run and the container wont stop...
   docker stop $CONTAINER_ID
 
   docker ps -a
