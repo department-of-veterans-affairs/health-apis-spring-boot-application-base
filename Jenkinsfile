@@ -21,11 +21,7 @@ def saunter(scriptName) {
     usernamePassword(
       credentialsId: 'QUALYS_USERNAME_PASSWORD',
       usernameVariable: 'QUALYS_USERNAME',
-      passwordVariable: 'QUALYS_PASSWORD'),
-    usernamePassword(
-      credentialsId: 'MOCK_EE_CREDENTIALS',
-      usernameVariable: 'MOCK_EE_USERNAME',
-      passwordVariable: 'MOCK_EE_PASSWORD')
+      passwordVariable: 'QUALYS_PASSWORD')
   ]) {
     echo "APPLICATION_BASE_VERSION = ${env.APPLICATION_BASE_VERSION}"
     sh script: scriptName
@@ -122,7 +118,7 @@ pipeline {
           filename "DockerfileMaven"
           registryUrl 'https://index.docker.io/v1/'
           registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
-          args "--entrypoint='' -t -d -u 1000:1000 --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker"
+          args "--entrypoint='' --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker"
         } 
       }
       steps {
@@ -150,20 +146,6 @@ pipeline {
       steps {
         saunter('./testCanary.sh')
       }   
-    }
-    /*
-    * Only job is to push new parent to repo with the real tag that other applications will use.
-    */
-    stage('PostTest') {
-      when {
-        expression { return env.BUILD_MODE != 'ignore' }
-        /*
-        expression { return env.BRANCH_NAME == 'master' }
-        */
-      }
-      steps {
-        saunter('./pushParent.sh')
-      }
     }
     /*
     I think there should be some kind of notification here.  Ask about Slack Notification function above ^^^

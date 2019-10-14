@@ -35,7 +35,6 @@ testApplicationJDK8(){
 }
 
 testApplicationJDK12(){
-
   #Launch mock-ee.  Write in fake username and password
 
   CONTAINER_ID=$(docker run \
@@ -58,7 +57,6 @@ testApplicationJDK12(){
 
   # Run the docker image with the required args
   # IF THE ARGS CHANGE THIS DOES TOO
-  
   docker run \
     --rm \
     --network host \
@@ -71,11 +69,17 @@ testApplicationJDK12(){
     --password=test \
     --icn=42
 
-  docker ps -a
-
   #What if the tests fail... This line will never run and the container wont stop...
   docker stop $CONTAINER_ID
 
+  docker tag vasdvp/health-apis-spring-boot-application-base:jdk-12-sec-scan vasdvp/health-apis-spring-boot-application-base:jdk-12
+  #docker push vasdvp/health-apis-spring-boot-application-base:jdk-12
+
+  #clean up time
+  docker rm -f vasdvp/health-apis-mock-eligibility-and-enrollment-canary:sec-scan
+  docker rm -f vasdvp/health-apis-spring-boot-application-base:jdk-12-sec-scan
+
+  docker images
   docker ps -a
 }
 
