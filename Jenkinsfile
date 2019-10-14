@@ -135,46 +135,22 @@ pipeline {
     * Test new container.
     */
     stage('Test'){
-      failFast true
-      parallel{  
-        //Parallel stages first launches the Canary Image
-        stage('launchCanary'){
-          when {
-            expression { return env.BUILD_MODE != 'ignore' }
-            /*
-            expression { return env.BRANCH_NAME == 'master' }
-            */
-          }
-          agent{
-            docker {
-              registryUrl 'https://index.docker.io/v1/'
-              registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
-              image 'vasdvp/health-apis-mock-eligibility-and-enrollment-canary:sec-scan'
-              alwaysPull false
-              args "--entrypoint='' --privileged -p 9090:9090"
-            } 
-          }
-          steps {
-            saunter('./launchCanary.sh')
-          }
+      //Second Parallel stage to test the Canary Image
+      stage('testCanary'){
+        when {
+          expression { return env.BUILD_MODE != 'ignore' }
+          /*
+          expression { return env.BRANCH_NAME == 'master' }
+          */
         }
-        //Second Parallel stage to test the Canary Image
-        stage('testCanary'){
-          when {
-            expression { return env.BUILD_MODE != 'ignore' }
-            /*
-            expression { return env.BRANCH_NAME == 'master' }
-            */
-          }
-          agent{
-            dockerfile {
-              filename "DockerfileDocker"
-              args "--entrypoint='' --network host --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker"
-            } 
-          }
-          steps {
-            saunter('./testCanary.sh')
-          }
+        agent{
+          dockerfile {
+            filename "DockerfileDocker"
+            args "--entrypoint='' --network host --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker"
+          } 
+        }
+        steps {
+          saunter('./testCanary.sh')
         }
       }
     }

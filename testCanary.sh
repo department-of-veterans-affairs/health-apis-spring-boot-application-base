@@ -36,12 +36,21 @@ testApplicationJDK8(){
 
 testApplicationJDK12(){
 
+  #Launch mock-ee.  Write in fake username and password
+
+  docker run \
+    -d \
+    --network host \
+    --entrypoint '/bin/bash' \
+    vasdvp/health-apis-mock-ee \
+    -c 'echo -e "ee.header.username=test\nee.header.password=test" > /opt/va/application.properties; \
+    /tmp/entypoint.sh'
+  
+
   docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
-  # Pull the docker image
+  # Pull the docker image for the mock-ee-test suite
   docker pull 'vasdvp/health-apis-mock-ee-tests:latest'
-
-  sleep 30
 
   curl -vk http://localhost:9090/actuator/health
 

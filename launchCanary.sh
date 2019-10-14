@@ -44,11 +44,11 @@ testApplicationJDK12(){
 
   sh /tmp/entrypoint.sh &
 
-  #echo 'it kept going?'
+  echo 'it kept going?'
 
-  #sleep 90
+  sleep 90
 
-  #echo 'it slept for 90?'
+  echo 'it slept for 90?'
 }
 
 if [ "$APPLICATION_BASE_VERSION" == "none" ]
