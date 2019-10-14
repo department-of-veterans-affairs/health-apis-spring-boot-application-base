@@ -46,9 +46,9 @@ testApplicationJDK12(){
 
   echo 'it kept going?'
 
-  sleep 30
+  sleep 90
 
-  echo 'it slept for 30?'
+  echo 'it slept for 90?'
 }
 
 if [ "$APPLICATION_BASE_VERSION" == "none" ]
