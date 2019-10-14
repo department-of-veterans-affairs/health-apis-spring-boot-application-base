@@ -135,24 +135,21 @@ pipeline {
     * Test new container.
     */
     stage('Test'){
-      //Second Parallel stage to test the Canary Image
-      stage('testCanary'){
-        when {
-          expression { return env.BUILD_MODE != 'ignore' }
-          /*
-          expression { return env.BRANCH_NAME == 'master' }
-          */
-        }
-        agent{
-          dockerfile {
-            filename "DockerfileDocker"
-            args "--entrypoint='' --network host --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker"
-          } 
-        }
-        steps {
-          saunter('./testCanary.sh')
-        }
+      when {
+        expression { return env.BUILD_MODE != 'ignore' }
+        /*
+        expression { return env.BRANCH_NAME == 'master' }
+        */
       }
+      agent{
+        dockerfile {
+          filename "DockerfileDocker"
+          args "--entrypoint='' --network host --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker"
+        } 
+      }
+      steps {
+        saunter('./testCanary.sh')
+      }   
     }
     /*
     * Only job is to push new parent to repo with the real tag that other applications will use.
