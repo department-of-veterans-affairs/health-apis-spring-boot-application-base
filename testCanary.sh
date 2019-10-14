@@ -46,6 +46,7 @@ testApplicationJDK12(){
     -c 'echo -e "ee.header.username=test\nee.header.password=test" > /opt/va/application.properties; \
     /tmp/entrypoint.sh')
   
+  echo 'Running container: $CONTAINER_ID'
 
   docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
@@ -70,7 +71,7 @@ testApplicationJDK12(){
     --icn=42
 
   docker ps -a
-  docker stop CONTAINER_ID
+  docker stop $CONTAINER_ID
 }
 
 if [ "$APPLICATION_BASE_VERSION" == "none" ]
