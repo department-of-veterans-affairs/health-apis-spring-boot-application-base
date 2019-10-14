@@ -75,9 +75,6 @@ echo "FULL SHA $FULL_DOCKER_SHA"
 DOCKER_SHA="${FULL_DOCKER_SHA#*:}"
 echo "Important SHA: $DOCKER_SHA"
 
-echo "Qualys Username $QUALYS_USERNAME"
-echo "Qualys Password $QUALYS_PASSWORD"
-
 # Make Request to our Qualys Container scans to get a list of vulnerabilities back
 QUALYS_ENDPOINT=https://qualysapi.qg3.apps.qualys.com/csapi/v1.1/images/$DOCKER_SHA/vuln
 QUALYS_SCAN_RESULT=$(curl -u $QUALYS_USERNAME:$QUALYS_PASSWORD $QUALYS_ENDPOINT)

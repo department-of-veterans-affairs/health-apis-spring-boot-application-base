@@ -24,8 +24,6 @@ if [ ! -d ~/.git ]; then mkdir -p ~/.git; fi
 
 git config --global http.sslVerify false
 
-echo 'about to clone'
-
 #
 # Clone away my friend.
 #
