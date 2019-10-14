@@ -30,11 +30,11 @@ pushParent(){
   esac
 }
 
-testApplicationJDK8(){
+pushParentJDK8(){
   echo "WE DONT HAVE A WAY TO TEST JDK 8"
 }
 
-testApplicationJDK12(){
+pushParentJDK12(){
   docker tag vasdvp/health-apis-spring-boot-application-base:jdk-12-sec-scan vasdvp/health-apis-spring-boot-application-base:jdk-12
   docker push vasdvp/health-apis-spring-boot-application-base:jdk-12
 }

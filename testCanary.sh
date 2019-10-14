@@ -39,6 +39,7 @@ testApplicationJDK12(){
   #Launch mock-ee.  Write in fake username and password
 
   CONTAINER_ID=$(docker run \
+    --rm
     -p 9090:9090 \
     -d \
     --entrypoint '/bin/bash' \
