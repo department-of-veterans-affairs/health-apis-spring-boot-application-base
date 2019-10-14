@@ -72,6 +72,8 @@ testApplicationJDK12(){
 
   docker ps -a
   docker stop $CONTAINER_ID
+
+  docker ps -a
 }
 
 if [ "$APPLICATION_BASE_VERSION" == "none" ]
