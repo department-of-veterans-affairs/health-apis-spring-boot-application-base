@@ -42,11 +42,11 @@ testApplicationJDK12(){
     -p 9090:9090 \
     -d \
     --entrypoint '/bin/bash' \
-    vasdvp/health-apis-spring-boot-application-base:jdk-12-sec-scan \
+    health-apis-mock-eligibility-and-enrollment-canary:sec-scan \
     -c 'echo -e "ee.header.username=test\nee.header.password=test" > /opt/va/application.properties; \
     /tmp/entrypoint.sh')
   
-  echo 'Running container: $CONTAINER_ID'
+  echo "Running container: $CONTAINER_ID"
 
   docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
