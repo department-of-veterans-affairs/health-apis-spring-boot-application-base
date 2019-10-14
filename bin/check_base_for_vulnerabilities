@@ -6,12 +6,6 @@
 set -euo pipefail
 
 #
-# Pull the latest tag of the Docker Base and check to see how many vulnerabilities it has
-# The Qualy's scans of the parent repos occur nightly at midnight so they should ne up to date.
-#
-
-
-#
 # Please look at format of QUALYS_SCAN_RESULT.  This will go through and prase all sev*Count for confrimed, potential,
 # patchAvailability.confirmed, and patchAvailability.potential)
 #
@@ -22,7 +16,6 @@ sumOfScans(){
     echo $(tr '\t' '+' <<< $(echo $QUALYS_SCAN_RESULT | jq -r "[.$base.sev1Count,.$base.sev2Count,.$base.sev3Count,.$base.sev4Count,.$base.sev5Count] | @tsv") | bc)
 }
 
-#THIS ISNT DONE
 checkConfirmedVulnerabilities(){
     if [ $(sumOfScans "vulnSummary.confirmed") != 0 ]
     then
@@ -38,7 +31,6 @@ checkConfirmedVulnerabilities(){
     fi
 }
 
-#THIS ISNT DONE
 checkPotentialVulnerabilities(){
     if [ $(sumOfScans "vulnSummary.potential") != "0" ]
     then
@@ -63,6 +55,11 @@ test -n $DOCKER_REPO
 test -n $QUALYS_USERNAME
 test -n $QUALYS_PASSWORD
 
+#
+# Pull the latest tag of the Docker Base and check to see how many vulnerabilities it has
+# The Qualy's scans of the parent repos occur nightly at midnight so they should ne up to date.
+#
+
 echo "Pulling down $DOCKER_REPO:$TAG to get SHA to check Qualys"
 docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 docker pull $DOCKER_REPO:$TAG
@@ -86,6 +83,7 @@ else
     exit 1
 fi
 
+# Display the number of vulnerabilities found in the qualys scan
 echo $QUALYS_SCAN_RESULT | jq
 
 checkConfirmedVulnerabilities
