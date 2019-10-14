@@ -52,6 +52,8 @@ testApplicationJDK12(){
   # Pull the docker image for the mock-ee-test suite
   docker pull 'vasdvp/health-apis-mock-ee-tests:latest'
 
+  sleep 30
+
   curl -vk http://localhost:9090/actuator/health
 
   # Run the docker image with the required args
