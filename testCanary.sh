@@ -38,13 +38,13 @@ testApplicationJDK12(){
 
   #Launch mock-ee.  Write in fake username and password
 
-  docker run \
+  CONTAINER_ID=$(docker run \
     -p 9090:9090 \
     -d \
     --entrypoint '/bin/bash' \
     vasdvp/health-apis-mock-ee \
     -c 'echo -e "ee.header.username=test\nee.header.password=test" > /opt/va/application.properties; \
-    /tmp/entrypoint.sh'
+    /tmp/entrypoint.sh')
   
 
   docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
@@ -53,8 +53,6 @@ testApplicationJDK12(){
   docker pull 'vasdvp/health-apis-mock-ee-tests:latest'
 
   sleep 60
-
-  #curl -vk http://localhost:9090/actuator/health
 
   # Run the docker image with the required args
   # IF THE ARGS CHANGE THIS DOES TOO
@@ -70,6 +68,9 @@ testApplicationJDK12(){
     --username=test \
     --password=test \
     --icn=42
+
+  docker ps -a
+  docker stop CONTAINER_ID
 }
 
 if [ "$APPLICATION_BASE_VERSION" == "none" ]
