@@ -29,8 +29,6 @@ doUpgrade() {
   sectag=$1-sec-scan
 
   docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-  ls -lh $WORKSPACE
-  ls -lh $HOME
 
   #Check to see if there are vulnerabilities in the image.
   checkForVulnerabilities

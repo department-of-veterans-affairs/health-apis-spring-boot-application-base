@@ -78,9 +78,6 @@ testApplicationJDK12(){
   #clean up time
   docker rmi -f vasdvp/health-apis-mock-eligibility-and-enrollment-canary:sec-scan
   docker rmi -f vasdvp/health-apis-spring-boot-application-base:jdk-12-sec-scan
-
-  docker images
-  docker ps -a
 }
 
 if [ "$APPLICATION_BASE_VERSION" == "none" ]
