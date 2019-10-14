@@ -39,12 +39,12 @@ testApplicationJDK12(){
   #Launch mock-ee.  Write in fake username and password
 
   docker run \
-    -d \
     -p 9090:9090 \
+    -d \
     --entrypoint '/bin/bash' \
     vasdvp/health-apis-mock-ee \
     -c 'echo -e "ee.header.username=test\nee.header.password=test" > /opt/va/application.properties; \
-    /tmp/entypoint.sh'
+    /tmp/entrypoint.sh'
   
 
   docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
@@ -54,22 +54,22 @@ testApplicationJDK12(){
 
   sleep 60
 
-  curl -vk http://localhost:9090/actuator/health
+  #curl -vk http://localhost:9090/actuator/health
 
   # Run the docker image with the required args
   # IF THE ARGS CHANGE THIS DOES TOO
   
-  #docker run \
-  #  --rm \
-  #  --network host \
-  #  'vasdvp/health-apis-mock-ee-tests:latest' \
-  #  'regression-test' \
-  #  --base-path='' \
-  #  --endpoint-domain-name=localhost:9090 \
-  #  --environment=local \
-  #  --username=$MOCK_EE_USERNAME \
-  #  --password=$MOCK_EE_PASSWORD \
-  #  --icn=42
+  docker run \
+    --rm \
+    --network host \
+    'vasdvp/health-apis-mock-ee-tests:latest' \
+    'regression-test' \
+    --base-path='' \
+    --endpoint-domain-name=http://localhost:9090 \
+    --environment=local \
+    --username=test \
+    --password=test \
+    --icn=42
 }
 
 if [ "$APPLICATION_BASE_VERSION" == "none" ]
