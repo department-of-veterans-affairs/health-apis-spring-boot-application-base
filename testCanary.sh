@@ -37,6 +37,12 @@ testApplicationJDK8(){
 testApplicationJDK12(){
   #Launch mock-ee.  Write in fake username and password
 
+  #This is important for multiple reasons.  
+  # - It gets the containerID of the running image so it can be stopped later
+  # - It removes itself after its been stopped
+  # - It binds the container to listen on port 9090 on the machine
+  # - It overwrites the entrypoint to run a bash command that then populates fake properties and then runs
+  # the REAL entrypoint script
   CONTAINER_ID=$(docker run \
     --rm \
     -p 9090:9090 \
@@ -57,6 +63,8 @@ testApplicationJDK12(){
 
   # Run the docker image with the required args
   # IF THE ARGS CHANGE THIS DOES TOO
+  # --network host is NEEDED for this to be able to connect the canary on port 9090.
+  # This username and password MUST match username and password in mock-ee-canary ^^
   docker run \
     --rm \
     --network host \
@@ -72,6 +80,7 @@ testApplicationJDK12(){
   #What if the tests fail... This line will never run and the container wont stop...
   docker stop $CONTAINER_ID
 
+  #Re-tag and push the image
   docker tag vasdvp/health-apis-spring-boot-application-base:jdk-12-sec-scan vasdvp/health-apis-spring-boot-application-base:jdk-12
   #docker push vasdvp/health-apis-spring-boot-application-base:jdk-12
 

@@ -12,8 +12,8 @@ set -euo pipefail
 
 sumOfScans(){
     base=$1
-    #echo "13"
-    echo $(tr '\t' '+' <<< $(echo $QUALYS_SCAN_RESULT | jq -r "[.$base.sev1Count,.$base.sev2Count,.$base.sev3Count,.$base.sev4Count,.$base.sev5Count] | @tsv") | bc)
+    echo "13"
+    #echo $(tr '\t' '+' <<< $(echo $QUALYS_SCAN_RESULT | jq -r "[.$base.sev1Count,.$base.sev2Count,.$base.sev3Count,.$base.sev4Count,.$base.sev5Count] | @tsv") | bc)
 }
 
 checkConfirmedVulnerabilities(){
