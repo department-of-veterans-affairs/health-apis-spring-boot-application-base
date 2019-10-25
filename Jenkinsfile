@@ -97,7 +97,7 @@ pipeline {
         */
       }
       steps {
-        saunter('./build.sh' env.APPLICATION_BASE_VERSION)
+        saunter('./build.sh', env.APPLICATION_BASE_VERSION)
       }
     }
     /*
