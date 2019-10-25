@@ -40,7 +40,7 @@ doDockerPush(){
   docker push $1:$2
 }
 
-if [ "$1" == "none" ]
+if [ "$APPLICATION_BASE_VERSION" == "none" ]
 then
   echo "Spring Boot Appication Base Upgrade"
   echo "Nothing Built"
@@ -49,7 +49,7 @@ then
   echo "\" I'm just trying to do as little as possible \" - My Hero"
   exit 0
 else
-  VERSION=$1
+  VERSION=$APPLICATION_BASE_VERSION
 fi 
 
 case "$VERSION" in
