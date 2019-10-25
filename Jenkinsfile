@@ -24,7 +24,7 @@ def saunter(scriptName) {
       passwordVariable: 'QUALYS_PASSWORD')
   ]) {
     echo "APPLICATION_BASE_VERSION = ${env.APPLICATION_BASE_VERSION}"
-    sh script: scriptName
+    sh script: scriptName $1
   }
 }
 
@@ -50,7 +50,7 @@ pipeline {
   }
   agent{
     dockerfile {
-      filename "DockerfileDocker"
+      filename "Dockerfile.docker"
       args "--entrypoint='' --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker"
     } 
   }
@@ -89,23 +89,6 @@ pipeline {
     * If they don't:  End build
     */
     
-    stage('PreBuild') {
-      when {
-        expression { return env.BUILD_MODE != 'ignore' }
-        /*
-        expression { return env.BRANCH_NAME == 'master' }
-        */
-      }
-      steps {
-        saunter('./build.sh')
-      }
-    }
-
-    /*
-    * If it got this far it means vulnerabilities were found
-    * Next step is to use that new image and build a local canary build of an application
-    * This will have an overwritten parent docker image to be the new base we just made
-    */
     stage('Build') {
       when {
         expression { return env.BUILD_MODE != 'ignore' }
@@ -113,39 +96,9 @@ pipeline {
         expression { return env.BRANCH_NAME == 'master' }
         */
       }
-      agent{
-        dockerfile {
-          filename "DockerfileMaven"
-          registryUrl 'https://index.docker.io/v1/'
-          registryCredentialsId 'DOCKER_USERNAME_PASSWORD'
-          args "--entrypoint='' --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker"
-        } 
-      }
       steps {
-        saunter('./buildTestApplication.sh')
+        saunter('./build.sh' env.APPLICATION_BASE_VERSION)
       }
-    }
-    /*
-    * Use the newly created docker image with the new parent
-    * Deploy the application within in the image
-    * Test new container.
-    */
-    stage('Test'){
-      when {
-        expression { return env.BUILD_MODE != 'ignore' }
-        /*
-        expression { return env.BRANCH_NAME == 'master' }
-        */
-      }
-      agent{
-        dockerfile {
-          filename "DockerfileDocker"
-          args "--entrypoint='' --network host --privileged --group-add 497 -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /data/jenkins/.m2/repository:/home/jenkins/.m2/repository -v /var/lib/jenkins/.ssh:/home/jenkins/.ssh -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker"
-        } 
-      }
-      steps {
-        saunter('./testCanary.sh')
-      }   
     }
     /*
     I think there should be some kind of notification here.  Ask about Slack Notification function above ^^^
