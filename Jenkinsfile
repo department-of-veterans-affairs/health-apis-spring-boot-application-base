@@ -1,4 +1,4 @@
-def saunter(scriptName) {
+def saunter(scriptName, appVersion) {
   withCredentials([
     usernameColonPassword(
       credentialsId: 'GITHUB_USERNAME_PASSWORD',
@@ -24,7 +24,7 @@ def saunter(scriptName) {
       passwordVariable: 'QUALYS_PASSWORD')
   ]) {
     echo "APPLICATION_BASE_VERSION = ${env.APPLICATION_BASE_VERSION}"
-    sh script: scriptName $1
+    sh script: scriptName appVersion
   }
 }
 
