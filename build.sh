@@ -18,7 +18,7 @@ doUpgrade() {
 
   #Retag image with VERSION and push with version tag
   docker tag $dockerRepo:$sectag $dockerRepo:$VERSION
-  docker push $dockerRepo:$VERSION
+  docker push $dockerRepo:jdk-$1-$VERSION
 }
 
 doUpgrade 8
