@@ -10,6 +10,7 @@ doUpgrade() {
   dockerRepo=vasdvp/health-apis-spring-boot-application-base
   sectag=jdk-$1-rc
   date=$(date +%D)
+  versionTag=jdk-$1-$VERSION
 
   docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
   docker build --build-arg CACHEBREAKER=$date-spring_boot_application_base -f Dockerfile$1 -t $dockerRepo:$sectag .
@@ -17,8 +18,8 @@ doUpgrade() {
   docker push $dockerRepo:$sectag
 
   #Retag image with VERSION and push with version tag
-  docker tag $dockerRepo:$sectag $dockerRepo:$VERSION
-  docker push $dockerRepo:jdk-$1-$VERSION
+  docker tag $dockerRepo:$sectag $dockerRepo:$versionTag
+  docker push $dockerRepo:$versionTag
 }
 
 doUpgrade 8
