@@ -7,14 +7,14 @@ FROM openjdk:8-jre-alpine
 # COPY /$AWS_APP_NAME-*.jar /opt/va/$AWS_APP_NAME.jar
 #
 
+ARG    CACHEBREAKER=0
+RUN    echo $CACHEBREAKER
+
 # necessary tools to run application
 RUN apk update && apk add bash && apk add curl && apk add --update py-pip
 
 
 # When running docker container, user must set the following unset variables at runtime
-ENV AWS_ACCESS_KEY_ID=unset
-ENV AWS_SECRET_ACCESS_KEY=unset
-ENV AWS_DEFAULT_REGION=unset
 ENV AWS_BUCKET_NAME=unset
 ENV ISC_PACKAGE_INSTANCENAME="CACHE"
 ENV ISC_PACKAGE_INSTALLDIR="/opt/cache"
