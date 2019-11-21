@@ -2,7 +2,7 @@
 set -euo pipefail
 
 BASEDIR=$(dirname $0)
-CACHEBREAKER=$(date +%D)
+CACHEBREAKER=$(date +%F)
 RELEASE=${RELEASE:-false}
 REPOSITORY=vasdvp/health-apis-spring-boot-application-base
 VERSION=${VERSION:-$(cat $BASEDIR/VERSION)}
