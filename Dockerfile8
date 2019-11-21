@@ -16,6 +16,7 @@ RUN apk update && apk add bash && apk add curl && apk add --update py-pip
 
 # When running docker container, user must set the following unset variables at runtime
 ENV AWS_BUCKET_NAME=unset
+ENV AWS_DEFAULT_REGION=unset
 ENV ISC_PACKAGE_INSTANCENAME="CACHE"
 ENV ISC_PACKAGE_INSTALLDIR="/opt/cache"
 ENV ISC_PACKAGE_STARTCACHE="N"
