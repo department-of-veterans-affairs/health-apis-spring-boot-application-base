@@ -1,7 +1,15 @@
-This project is a standalone repo for the Docker Base Images for Spring Boot Application Bases.
+# Spring Boot Application Base
 
-The build.sh script will rebuild all versions of the Spring Boot Application Base that are currently available (for now 8 and 12).  
+Spring Boot application base Docker images.
 
-These rebuilt bases will be pushed to vasdvp/health-apis-spring-boot-application-base:jdk-{version}-rc.
+## Supported Builds
+The following builds are supported.
+- Java 8 (`jdk-8`)
+- Java 12 (`jdk-12`)
 
-From there they will be tested by other jobs in the pipeline.
+## Build Process
+Run `build.sh [8|12]` to generate images. Omit version to build all supported images.
+
+Tags will be appended with _-$VERSION_ (e.g. `jdk-12-1.1.0-SNAPSHOT`). This is done primarily to prevent Jenkins from using a pre-release image to build any applications.
+
+Upon release, images will be retagged to remove _-$VERSION_ and pushed to Docker Hub.
