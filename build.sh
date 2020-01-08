@@ -7,11 +7,15 @@ RELEASE=${RELEASE:-false}
 REPOSITORY=vasdvp/health-apis-spring-boot-application-base
 VERSION=${VERSION:-$(cat $BASEDIR/VERSION)}
 
+#
+# NOTE: we do not use jdk < 12 at this time so at this point only
+# performing release candidate health-apis-base-upgrader testing on 12+ builds.
+#
 do_build() {
   local java_version=$1
   case "$java_version" in
     8) local tags=(jdk-8) ;;
-    12) local tags=(jdk-12) ;;
+    12) local tags=(jdk-12-rc) ;;
     *) echo "Unknown Java version: $java_version. Supported versions are 8 and 12." && exit 1 ;;
   esac
   docker build \
