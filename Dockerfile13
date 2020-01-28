@@ -1,0 +1,30 @@
+FROM openjdk:13-jdk
+
+#
+# Child containers should be set this variable and copy in their application
+#
+# ENV AWS_APP_NAME=${app}
+# COPY /$AWS_APP_NAME-*.jar /opt/va/$AWS_APP_NAME.jar
+#
+
+ARG    CACHEBREAKER=0
+RUN    echo $CACHEBREAKER
+
+# necessary tools to run application
+RUN yum -y -q update
+RUN yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y -q
+RUN yum install -y -q unzip && yum install -y -q python-pip
+
+# When running docker container, user must set the following unset variables at runtime
+ENV AWS_BUCKET_NAME=unset
+ENV AWS_DEFAULT_REGION=unset
+ENV ISC_PACKAGE_INSTANCENAME="CACHE"
+ENV ISC_PACKAGE_INSTALLDIR="/opt/cache"
+ENV ISC_PACKAGE_STARTCACHE="N"
+
+ADD "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" /tmp/aws2/awscli-bundle.zip
+RUN cd /tmp/aws2 && chmod 777 /tmp/aws2/awscli-bundle.zip && unzip /tmp/aws2/aws*.zip && /tmp/aws2/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+
+COPY /entrypoint.sh /tmp/entrypoint.sh
+RUN chmod 777 /tmp/entrypoint.sh
+ENTRYPOINT ["/tmp/entrypoint.sh"]

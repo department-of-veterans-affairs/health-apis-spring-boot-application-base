@@ -16,7 +16,8 @@ do_build() {
   case "$java_version" in
     8) local tags=(jdk-8) ;;
     12) local tags=(jdk-12-rc) ;;
-    *) echo "Unknown Java version: $java_version. Supported versions are 8 and 12." && exit 1 ;;
+    13) local tags=(jdk-13) ;;
+    *) echo "Unknown Java version: $java_version. Supported versions are 8, 12, 13." && exit 1 ;;
   esac
   docker build \
     --build-arg CACHEBREAKER=$CACHEBREAKER \
@@ -36,6 +37,7 @@ do_build() {
 if [ $# == 0 ]; then
   do_build 8
   do_build 12
+  do_build 13
 else
   do_build $1
 fi
