@@ -1,6 +1,18 @@
 FROM openjdk:12-jdk
 
 #
+# Install VA certs
+#
+RUN test 200 == "$(curl -sw %{http_code} \
+  http://aia.pki.va.gov/PKI/AIA/VA/VA-Internal-S2-RCA1-v1.cer \
+  -o /etc/pki/ca-trust/source/anchors/VA-Internal-S2-RCA1-v1.cer)" \
+  && update-ca-trust extract \
+  && echo yes | keytool -import -cacerts -trustcacerts -storepass changeit \
+     -alias VA-Internal-S2-RCA1-v1 \
+     -file /etc/pki/ca-trust/source/anchors/VA-Internal-S2-RCA1-v1.cer
+
+
+#
 # Child containers should be set this variable and copy in their application
 #
 # ENV AWS_APP_NAME=${app}
