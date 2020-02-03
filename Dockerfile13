@@ -1,6 +1,18 @@
 FROM openjdk:13-jdk
 
 #
+# Install VA certs
+#
+RUN test 200 == "$(curl -sw %{http_code} \
+  http://aia.pki.va.gov/PKI/AIA/VA/VA-Internal-S2-RCA1-v1.cer \
+  -o /etc/pki/ca-trust/source/anchors/VA-Internal-S2-RCA1-v1.cer)" \
+  && update-ca-trust extract \
+  && echo yes | keytool -import -cacerts -trustcacerts -storepass changeit \
+     -alias VA-Internal-S2-RCA1-v1 \
+     -file /etc/pki/ca-trust/source/anchors/VA-Internal-S2-RCA1-v1.cer
+
+
+#
 # Child containers should be set this variable and copy in their application
 #
 # ENV AWS_APP_NAME=${app}
@@ -11,9 +23,8 @@ ARG    CACHEBREAKER=0
 RUN    echo $CACHEBREAKER
 
 # necessary tools to run application
-RUN yum -y -q update
-RUN yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y -q
-RUN yum install -y -q unzip && yum install -y -q python-pip
+RUN yum -y -q update && yum install -y -q bash && yum install -y -q curl && yum install -y -q unzip && yum install -y -q python-pip
+
 
 # When running docker container, user must set the following unset variables at runtime
 ENV AWS_BUCKET_NAME=unset
