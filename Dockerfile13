@@ -23,7 +23,10 @@ ARG    CACHEBREAKER=0
 RUN    echo $CACHEBREAKER
 
 # necessary tools to run application
-RUN yum -y -q update && yum install -y -q unzip && yum install -y -q python-pip
+RUN yum -y -q update \
+  && yum install -y -q https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
+  && yum install -y -q unzip \
+  && yum install -y -q python-pip
 
 
 # When running docker container, user must set the following unset variables at runtime
