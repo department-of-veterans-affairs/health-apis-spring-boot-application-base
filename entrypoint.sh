@@ -27,4 +27,4 @@ then
 fi
 
 echo ============================================================
-java -jar $(find .  -type f -name "$AWS_APP_NAME-*.jar" | head -1)
+exec java -jar $(find .  -type f -name "$AWS_APP_NAME-*.jar" | head -1) $@
